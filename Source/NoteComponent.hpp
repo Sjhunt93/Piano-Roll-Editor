@@ -47,9 +47,10 @@ public:
     
 //    void mouseDoubleClick (const MouseEvent&);
     
-    std::function<void(NoteComponent*)> onNoteSelect;
+    std::function<void(NoteComponent*, const MouseEvent&)> onNoteSelect;
     std::function<void(NoteComponent*)> onPositionMoved;
-    std::function<void(NoteComponent*, int, int)> onDragging;
+//    std::function<void(NoteComponent*, int, int)> onDragging;
+    std::function<void(NoteComponent*, const MouseEvent&)> onDragging; //send the drag event to other components..
     std::function<void(NoteComponent*, int)> onLegnthChange; //sends the difference as this is relative for all components.
     
     int minWidth = 20;

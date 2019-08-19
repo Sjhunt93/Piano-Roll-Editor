@@ -100,14 +100,14 @@ void NoteGridComponent::setupGrid (float px, float compHeight)
     noteCompHeight = compHeight;
 }
 
-void NoteGridComponent::noteCompSelected (NoteComponent * nc)
+void NoteGridComponent::noteCompSelected (NoteComponent * nc, const MouseEvent& e)
 {
     for (NoteComponent * component : noteComps) {
         if (component == nc) {
             component->setState(NoteComponent::eSelected);
             component->toFront(true);
         }
-        else {
+        else if (component->getState() == NoteComponent::eSelected && !e.mods.isShiftDown() ) {
             component->setState(NoteComponent::eNone);
         }
     }
@@ -143,7 +143,7 @@ void NoteGridComponent::noteCompPositionMoved (NoteComponent * comp, bool callRe
 void NoteGridComponent::noteCompLengthChanged (NoteComponent * original, int diff)
 {
     for (auto n : noteComps) {
-        if (n->getState() == NoteComponent::eSelected && n != original) {
+        if (n->getState() == NoteComponent::eSelected || n == original) {
             if (n->startWidth == -1) {
                 n->startWidth = n->getWidth();
                 n->coordiantesDiffer = true;
@@ -159,6 +159,16 @@ void NoteGridComponent::noteCompLengthChanged (NoteComponent * original, int dif
     }
 }
 
+void NoteGridComponent::noteCompDragging (NoteComponent* original, const MouseEvent& event)
+{
+    for (auto n : noteComps) {
+        if (n->getState() == NoteComponent::eSelected && n != original) {
+//            n->dragComponent(n, event, nullptr);
+            n->setTopLeftPosition(event.getMouseDownX(), event.getMouseDownY());
+        }
+
+    }
+}
 void NoteGridComponent::setPositions ()
 {
     
@@ -212,8 +222,8 @@ void NoteGridComponent::mouseDoubleClick (const MouseEvent& e)
     jassert(note >= 0 && note < 127);
     
     NoteComponent * nn = new NoteComponent();
-    nn->onNoteSelect = [this](NoteComponent * n) {
-        this->noteCompSelected(n);
+    nn->onNoteSelect = [this](NoteComponent * n, const MouseEvent& e) {
+        this->noteCompSelected(n, e);
     };
     nn->onPositionMoved = [this](NoteComponent * n) {
         this->noteCompPositionMoved(n);
@@ -221,9 +231,17 @@ void NoteGridComponent::mouseDoubleClick (const MouseEvent& e)
     nn->onLegnthChange = [this](NoteComponent * n, int diff) {
         this->noteCompLengthChanged(n, diff);
     };
+    nn->onDragging = [this](NoteComponent * n, const MouseEvent & e) {
+        this->noteCompDragging(n, e);
+    };
     addAndMakeVisible(nn);
-    nn->setValues({(u8)note, (u8) ((arc4random() % 60) + 60), (st_int)xPos, 480/2});
+    NoteModel nModel = {(u8)note, (u8) ((arc4random() % 60) + 60), (st_int)xPos, 480/2};
+    nModel.quantiseModel(defaultResolution / 8, true, true);
+    nn->setValues(nModel);
+    
+
     noteComps.push_back(nn);
+    
     resized();
     repaint();
 }
@@ -262,9 +280,7 @@ void NoteGridComponent::deleteAllSelected ()
 
 Sequence NoteGridComponent::getSequence ()
 {
-    int leftToSort = noteComps.size();
-    
-
+    int leftToSort = (int) noteComps.size();
     
     std::vector<NoteComponent *> componentsCopy = noteComps;
     auto findLowest = [&]() -> int {

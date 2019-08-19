@@ -101,16 +101,17 @@ void NoteComponent::mouseDown  (const MouseEvent& e)
         startDraggingComponent(this, e);
     }
     if (!resizeEnabled) {
-        if (onNoteSelect != nullptr) {
-            onNoteSelect(this);
-        }
+        
     }
     
 }
-void NoteComponent::mouseUp    (const MouseEvent&)
+void NoteComponent::mouseUp    (const MouseEvent& e)
 {
     if (onPositionMoved != nullptr) {
         onPositionMoved(this);
+    }
+    if (onNoteSelect != nullptr) {
+        onNoteSelect(this, e);
     }
     startWidth = -1;
     mouseOver = false;
@@ -123,24 +124,16 @@ void NoteComponent::mouseDrag  (const MouseEvent& e)
     if (!resizeEnabled) {
         setMouseCursor(MouseCursor::DraggingHandCursor);
         dragComponent(this, e, nullptr);
+//        if (onDragging != nullptr) {
+//            onDragging(this, e);
+//        }
     }
     else {
-//        const int newWidth =  ;//e.getPosition().getX() - getX();
-//        if (onLegnthChange != nullptr) {
-//            onLegnthChange(this, startWidth-getWidth());
-//        }
-
-        
-        if (e.getPosition().getX() > minWidth) {
-            setSize(e.getPosition().getX(), getHeight());
             if (onLegnthChange != nullptr) {
-                onLegnthChange(this, startWidth-getWidth());
+                onLegnthChange(this, startWidth-e.getPosition().getX());
             }
-        }
-        
         
     }
-//    std::cout << e.getDistanceFromDragStartX() << " - " << e.getDistanceFromDragStartY() << "\n";
     
 }
 void NoteComponent::mouseMove  (const MouseEvent& e)

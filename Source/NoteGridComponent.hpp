@@ -32,9 +32,10 @@ public:
     void paint (Graphics & g);
     void resized ();
     
-    void noteCompSelected (NoteComponent *);
+    void noteCompSelected (NoteComponent *, const MouseEvent&);
     void noteCompPositionMoved (NoteComponent *, bool callResize = true);
     void noteCompLengthChanged (NoteComponent *, int diff);
+    void noteCompDragging (NoteComponent*, const MouseEvent&);
     void setPositions ();
     
     /*
