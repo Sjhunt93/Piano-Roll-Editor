@@ -45,6 +45,8 @@ void NoteComponent::paint (Graphics & g)
         
         g.drawLine(5, getHeight() * 0.5 - 2, lineMax * (model.velocity/127.0), getHeight() * 0.5 - 2, 4);
     }
+    g.setColour(Colours::white);
+    g.drawText(String(model.note), 3, 3, getWidth() - 6, getHeight() - 6, Justification::centred);
     
 }
 void NoteComponent::resized ()
@@ -59,6 +61,12 @@ void NoteComponent::setCustomColour (Colour c)
 
 void NoteComponent::setValues (NoteModel m)
 {
+    
+    
+    if (m.note == 255) { m.note = 0; } //unsigned overflow
+    if (m.note > 127) { m.note = 127; }
+    
+    if (((int)m.startTime) < 0) { m.startTime = 0; } //cast to int as noteLen is unsigned. allows us to check for 0
     model = m;
     repaint();
 
@@ -145,3 +153,12 @@ void NoteComponent::mouseMove  (const MouseEvent& e)
         setMouseCursor(MouseCursor::NormalCursor);
     }
 }
+
+//MultiEditState NoteComponent::getMultiEditState ()
+//{
+//    
+//}
+//void NoteComponent::setMultiEditState (MultiEditState state)
+//{
+//    
+//}

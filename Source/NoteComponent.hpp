@@ -22,7 +22,11 @@ public:
         eNone,
         eSelected,
     };
-    
+    struct MultiEditState {
+        int startWidth; //used when resizing the noteComponents length
+        bool coordiantesDiffer; //sometimes the size of this component gets changed externally (for example on multi-resizing) set this flag to be true and at
+        Rectangle<int> startingBounds;
+    };
     
     NoteComponent ();
     ~NoteComponent ();
@@ -56,6 +60,10 @@ public:
     int minWidth = 20;
     int startWidth; //used when resizing the noteComponents length
     bool coordiantesDiffer; //sometimes the size of this component gets changed externally (for example on multi-resizing) set this flag to be true and at some point the internal model will get updated also
+//    MultiEditState getMultiEditState ();
+//    void setMultiEditState (MultiEditState state);
+    MultiEditState mEditState;
+
 private:
     
     ResizableEdgeComponent edgeResizer;
@@ -65,6 +73,7 @@ private:
     NoteModel model;
     MouseCursor normal;
     eState state;
+
 };
 
 #endif /* NoteComponent_hpp */

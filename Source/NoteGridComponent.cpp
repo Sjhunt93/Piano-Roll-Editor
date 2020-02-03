@@ -46,6 +46,8 @@ void NoteGridComponent::paint (Graphics & g)
                 g.setColour(Colours::lightgrey.darker().withAlpha(0.5f));
             }
             g.fillRect(0, (int)line, getWidth(), (int)noteCompHeight);
+            g.setColour(Colours::white);
+            g.drawText(String(i), 5, line, 40, noteCompHeight, Justification::left);
             line += noteCompHeight;
             g.setColour(Colours::black);
             g.drawLine(0, line, getWidth(), line);
@@ -82,7 +84,10 @@ void NoteGridComponent::resized ()
             noteCompPositionMoved(component, false);
         }
         const float xPos = (component->getModel().startTime / ((float) ticksPerTimeSignature)) * pixelsPerBar;
-        const float yPos = getHeight() - ((component->getModel().note / 127.0) * getHeight());
+        jassert(component->getModel().note != 127);
+        const float noteRatio = (component->getModel().note / 127.0);
+//        const float yPos = getHeight() - (noteRatio * getHeight());
+        const float yPos = (getHeight() - (component->getModel().note * noteCompHeight)) - noteCompHeight;
         float len = (component->getModel().noteLegnth / ((float) ticksPerTimeSignature)) * pixelsPerBar;
         
         component->setBounds(xPos, yPos, len, noteCompHeight);
@@ -98,6 +103,7 @@ void NoteGridComponent::setupGrid (float px, float compHeight)
 {
     pixelsPerBar = px;
     noteCompHeight = compHeight;
+    setSize(pixelsPerBar * 10, compHeight * 128); //we have 128 slots for notes
 }
 
 void NoteGridComponent::noteCompSelected (NoteComponent * nc, const MouseEvent& e)
@@ -164,7 +170,7 @@ void NoteGridComponent::noteCompDragging (NoteComponent* original, const MouseEv
     for (auto n : noteComps) {
         if (n->getState() == NoteComponent::eSelected && n != original) {
 //            n->dragComponent(n, event, nullptr);
-            n->setTopLeftPosition(event.getMouseDownX(), event.getMouseDownY());
+       //     n->setTopLeftPosition(event.getMouseDownX(), event.getMouseDownY());
         }
 
     }
@@ -187,11 +193,28 @@ void NoteGridComponent::mouseDrag (const MouseEvent& e)
         selectorBox.toFront(false);
         
         selectorBox.setTopLeftPosition(e.getPosition());
-        
+        selectorBox.startX = e.getPosition().x;
+        selectorBox.startY = e.getPosition().y;
         
     }
     else {
-        selectorBox.setSize(e.getPosition().getX() - selectorBox.getX(), e.getPosition().getY() - selectorBox.getY());
+        int xDir = e.getPosition().x - selectorBox.startX;
+        int yDir = e.getPosition().y - selectorBox.startY;
+        if (xDir < 0 && yDir < 0) { //top left
+            selectorBox.setTopLeftPosition(e.getPosition().x, e.getPosition().y);
+            selectorBox.setSize(selectorBox.startX - e.getPosition().getX(), selectorBox.startY - e.getPosition().getY());
+        }
+        else if (xDir > 0 && yDir < 0) { //top right
+            selectorBox.setTopLeftPosition(selectorBox.startX, e.getPosition().y);
+            selectorBox.setSize(e.getPosition().getX() - selectorBox.startX, selectorBox.startY - e.getPosition().getY());
+        }
+        else if (xDir < 0 && yDir > 0) { //bottom left
+            selectorBox.setTopLeftPosition(e.getPosition().x, selectorBox.startY);
+            selectorBox.setSize(selectorBox.startX - e.getPosition().getX(), e.getPosition().getY() -  selectorBox.startY);
+        }
+        else { //bottom right
+            selectorBox.setSize(e.getPosition().getX() - selectorBox.getX(), e.getPosition().getY() - selectorBox.getY());
+        }
     }
 }
 void NoteGridComponent::mouseUp (const MouseEvent&)
@@ -218,9 +241,11 @@ void NoteGridComponent::mouseUp (const MouseEvent&)
 void NoteGridComponent::mouseDoubleClick (const MouseEvent& e)
 {
     const int xPos = (e.getMouseDownX() / ((float)pixelsPerBar)) * ticksPerTimeSignature;
-    const int note = 128 - (e.getMouseDownY() / noteCompHeight);
-    jassert(note >= 0 && note < 127);
+    const int yIn = ((float)e.getMouseDownY() / noteCompHeight);
+    const int note = 127 - yIn;
+    jassert(note >= 0 && note <= 127);
     
+    //set up lambdas..
     NoteComponent * nn = new NoteComponent();
     nn->onNoteSelect = [this](NoteComponent * n, const MouseEvent& e) {
         this->noteCompSelected(n, e);
@@ -259,6 +284,47 @@ bool NoteGridComponent::keyPressed (const KeyPress& key, Component* originatingC
         //
         getSequence();
         return true;
+    }
+    if (key == KeyPress::upKey || key == KeyPress::downKey) {
+        bool didMove = false;
+        for (auto nComp : noteComps) {
+            if (nComp->getState() == NoteComponent::eSelected) {
+                NoteModel nModel =  nComp->getModel();
+                (key == KeyPress::upKey) ?
+                nModel.note++ :
+                nModel.note--;
+                
+                nComp->setValues(nModel);
+                didMove = true;
+            }
+        }
+        if (didMove) {
+            resized();
+            return true;
+            
+        }
+        
+    }
+    if (key == KeyPress::leftKey || key == KeyPress::rightKey) {
+        bool didMove = false;
+        const int nudgeAmount = defaultResolution / 16;
+        for (auto nComp : noteComps) {
+            if (nComp->getState() == NoteComponent::eSelected) {
+                NoteModel nModel =  nComp->getModel();
+                (key == KeyPress::rightKey) ?
+                nModel.startTime += nudgeAmount:
+                nModel.startTime -= nudgeAmount;
+                
+                nComp->setValues(nModel);
+                didMove = true;
+            }
+        }
+        if (didMove) {
+            resized();
+            return true;
+            
+        }
+        
     }
     return false;
 }

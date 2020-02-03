@@ -9,9 +9,9 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent()
+MainComponent::MainComponent() : noteGridPanel(noteGrid)
 {
-    setSize (600, 400);
+    setSize (800, 600);
     
     addAndMakeVisible(viewport);
 //    viewport.setScrollOnDragEnabled(true);
@@ -19,6 +19,7 @@ MainComponent::MainComponent()
     viewport.setScrollBarsShown(true, true);
     viewport.setScrollBarThickness(10);
 //    viewport.setColour(Colourids
+    addAndMakeVisible(noteGridPanel);
 }
 
 MainComponent::~MainComponent()
@@ -38,9 +39,12 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
-    viewport.setBounds(10, 10, getWidth()-10, getHeight()-10);
+    viewport.setBounds(10, 10, getWidth()-10, getHeight()-150);
     noteGrid.setBounds(0,0,4000, 20*127);
     noteGrid.setupGrid(900, 20);
+    noteGrid.resized();
+    
+    noteGridPanel.setBounds(5, viewport.getBottom() + 5, getWidth() - 10, 140);
     
     
 

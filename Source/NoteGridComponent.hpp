@@ -11,12 +11,14 @@
 #include "NoteComponent.hpp"
 
 class SelectionBox : public Component {
+public:
     void paint (Graphics & g)
     {
         Colour c = Colours::white;
         c = c.withAlpha((float)0.5);
         g.fillAll(c);
     }
+    int startX, startY;
 };
 
 class NoteGridComponent :
