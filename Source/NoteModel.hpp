@@ -14,10 +14,28 @@
 
 class NoteModel {
 public:
-    u8 note;
-    u8 velocity;
-    st_int startTime;
-    st_int noteLegnth;
+    
+    NoteModel ()
+    {
+        
+    }
+    NoteModel (u8 n, u8 v, st_int st, st_int nl)
+    {
+        note = n;
+        velocity = v;
+        startTime = st;
+        noteLegnth = nl;
+        
+    }
+    NoteModel (const NoteModel & other)
+    {
+        note = other.note;
+        velocity = other.velocity;
+        startTime = other.startTime;
+        noteLegnth = other.noteLegnth;
+    }
+    
+    
     
     /*
      Quantising to say 1/8 notes would require an input value of 240 (or 0.5 * the default resolution)
@@ -43,6 +61,10 @@ public:
         }
         
     }
+    u8 note;
+    u8 velocity;
+    st_int startTime;
+    st_int noteLegnth;
 };
 
 class Sequence {

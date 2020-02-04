@@ -42,6 +42,18 @@ MainComponent::MainComponent() : noteGrid(styleSheet), noteGridPanel(noteGrid, s
         keyboardComp.setSize(viewportPiano.getWidth(), noteGrid.getHeight()); //subtract 10 for the scroll bars
 
     };
+    
+    Sequence seq;
+    for (int i = 0; i < 16; i++) {
+        NoteModel nm;
+        nm.note = arc4random() % 24 + 48;
+        nm.velocity = arc4random() % 50 + 55;
+        nm.startTime = i * 240;
+        nm.noteLegnth = 480;
+        seq.events.push_back(nm);
+    }
+    noteGrid.loadSequence(seq);
+    
 }
 
 MainComponent::~MainComponent()

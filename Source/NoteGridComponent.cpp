@@ -373,3 +373,40 @@ Sequence NoteGridComponent::getSequence ()
     seq.print();
     return seq;
 }
+
+void NoteGridComponent::loadSequence (Sequence sq)
+{
+    for (int i = 0; i < noteComps.size(); i++) {
+        removeChildComponent(noteComps[i]);
+        delete noteComps[i];
+        
+    }
+    noteComps.clear();
+    
+    noteComps.reserve(sq.events.size());
+    
+    for (auto event : sq.events) {
+        NoteComponent * nn = new NoteComponent(styleSheet);
+        nn->onNoteSelect = [this](NoteComponent * n, const MouseEvent& e) {
+            this->noteCompSelected(n, e);
+        };
+        nn->onPositionMoved = [this](NoteComponent * n) {
+            this->noteCompPositionMoved(n);
+        };
+        nn->onLegnthChange = [this](NoteComponent * n, int diff) {
+            this->noteCompLengthChanged(n, diff);
+        };
+        nn->onDragging = [this](NoteComponent * n, const MouseEvent & e) {
+            this->noteCompDragging(n, e);
+        };
+        addAndMakeVisible(nn);
+        NoteModel nModel(event);
+        nModel.quantiseModel(defaultResolution / 8, true, true);
+        nn->setValues(nModel);
+        
+        noteComps.push_back(nn);
+
+    }
+    resized();
+    repaint();
+}

@@ -61,6 +61,7 @@ public:
     
     // From here you could convert this into MIDI or any other custom musical encoding.
     Sequence getSequence ();
+    void loadSequence (Sequence sq);
     
 private:
     NoteGridStyleSheet & styleSheet;
