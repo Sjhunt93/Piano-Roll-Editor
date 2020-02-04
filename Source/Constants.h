@@ -13,4 +13,20 @@ typedef unsigned int st_int;
 
 static const int defaultResolution = 480; // per quarter note
 
+
+static const char * pitches_names[] = {
+    "C",
+    "C#",
+    "D",
+    "D#",
+    "E",
+    "F",
+    "F#",
+    "G",
+    "G#",
+    "A",
+    "A#",
+    "B",
+};
+
 #endif /* Constants_h */

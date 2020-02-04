@@ -12,15 +12,17 @@
 
 class NoteGridStyleSheet {
 public:
-    friend class NoteGridControlPannel; //we use to ensure a one way only relationship. The control pannel can set member varialbes but nothing else can...
+    friend class NoteGridControlPanel; //we use to ensure a one way only relationship. The control pannel can set member varialbes but nothing else can...
+    
+    NoteGridStyleSheet ();
     
     bool getDrawMIDINum ();
     bool getDrawMIDINoteStr ();
-    
+    bool getDrawVelocity ();
     
 private:
-    bool drawMIDINum;
-    bool drawMIDINoteStr;
+    bool drawMIDINum, drawMIDINoteStr, drawVelocity;
+    
     
 };
 

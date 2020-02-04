@@ -11,21 +11,27 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "NoteGridComponent.hpp"
+#include "NoteGridStyleSheet.hpp"
 
 class NoteGridControlPanel : public Component {
 public:
-    NoteGridControlPanel (NoteGridComponent & component);
+    NoteGridControlPanel (NoteGridComponent & component, NoteGridStyleSheet & styleSheet);
     ~NoteGridControlPanel ();
     
     void resized ();
     void paint (Graphics & g);
     
+    void renderSequence ();
+    std::function<void(int pixelsPerBar, int noteHeight)> configureGrid; //p
 private:
     
     NoteGridComponent & noteGrid;
+    NoteGridStyleSheet & styleSheet;
     
     Slider noteCompHeight;
     Slider pixelsPerBar;
+    TextButton render;
+    ToggleButton drawMIDINotes, drawMIDIText, drawVelocity;
 };
 
 #endif /* NoteGridControlPanel_hpp */

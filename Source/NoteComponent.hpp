@@ -11,6 +11,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "NoteModel.hpp"
+#include "NoteGridStyleSheet.hpp"
 
 class NoteComponent :
 public Component,
@@ -28,7 +29,7 @@ public:
         Rectangle<int> startingBounds;
     };
     
-    NoteComponent ();
+    NoteComponent (NoteGridStyleSheet & styleSheet);
     ~NoteComponent ();
     
     void paint (Graphics & g);
@@ -65,10 +66,11 @@ public:
     MultiEditState mEditState;
 
 private:
-    
+    NoteGridStyleSheet & styleSheet;
     ResizableEdgeComponent edgeResizer;
     
-    bool mouseOver, useCustomColour, resizeEnabled;
+    bool mouseOver, useCustomColour, resizeEnabled, velocityEnabled;
+    int startVelocity;
     Colour customColour;
     NoteModel model;
     MouseCursor normal;

@@ -8,13 +8,14 @@
 #include "NoteComponent.hpp"
 
 
-NoteComponent::NoteComponent () : edgeResizer(this, nullptr, ResizableEdgeComponent::Edge::rightEdge)
+NoteComponent::NoteComponent (NoteGridStyleSheet & ss) : styleSheet(ss), edgeResizer(this, nullptr, ResizableEdgeComponent::Edge::rightEdge)
 {
     mouseOver = useCustomColour = false;
     addAndMakeVisible(edgeResizer);
     setMouseCursor(normal);
     startWidth = -1;
     coordiantesDiffer = false;
+    
 }
 NoteComponent::~NoteComponent ()
 {
@@ -23,7 +24,7 @@ NoteComponent::~NoteComponent ()
 
 void NoteComponent::paint (Graphics & g)
 {
-    g.fillAll(Colours::darkgrey);
+    g.fillAll(Colours::darkgrey); //border...
     Colour cToUse;
     if (useCustomColour) {
         cToUse = customColour;
@@ -37,16 +38,28 @@ void NoteComponent::paint (Graphics & g)
         cToUse = cToUse.brighter().brighter();
     }
     g.setColour(cToUse);
+    
+    //draw middle box.
     g.fillRect(1, 1, getWidth() - 2, getHeight() - 2);
-//    g.drawLine(<#float startX#>, <#float startY#>, <#float endX#>, <#float endY#>)
-    if (getWidth() > 10) {
+
+    
+    //draw velocity
+    if (getWidth() > 10 && styleSheet.getDrawVelocity()) {
         g.setColour(cToUse.brighter());
         const int lineMax = getWidth() - 5;
         
         g.drawLine(5, getHeight() * 0.5 - 2, lineMax * (model.velocity/127.0), getHeight() * 0.5 - 2, 4);
     }
+    String toDraw;
+    if (styleSheet.getDrawMIDINoteStr()) {
+        toDraw += String(pitches_names[model.note%12]) + String(model.note/12) + String(" ");
+    }
+    if (styleSheet.getDrawMIDINum()) {
+        toDraw += String(model.note);
+    }
+    
     g.setColour(Colours::white);
-    g.drawText(String(model.note), 3, 3, getWidth() - 6, getHeight() - 6, Justification::centred);
+    g.drawText(String(toDraw), 3, 3, getWidth() - 6, getHeight() - 6, Justification::centred);
     
 }
 void NoteComponent::resized ()
@@ -100,8 +113,11 @@ void NoteComponent::mouseExit  (const MouseEvent&)
 }
 void NoteComponent::mouseDown  (const MouseEvent& e)
 {
-    
-    if (getWidth() - e.getMouseDownX() < 10) {
+    if (e.mods.isShiftDown()) {
+        velocityEnabled = true;
+        startVelocity = model.velocity;
+    }
+    else if (getWidth() - e.getMouseDownX() < 10) {
         resizeEnabled = true;
         startWidth = getWidth();
     }
@@ -124,22 +140,39 @@ void NoteComponent::mouseUp    (const MouseEvent& e)
     startWidth = -1;
     mouseOver = false;
     resizeEnabled = false;
+    velocityEnabled = false;
     repaint();
     
 }
 void NoteComponent::mouseDrag  (const MouseEvent& e)
 {
-    if (!resizeEnabled) {
-        setMouseCursor(MouseCursor::DraggingHandCursor);
-        dragComponent(this, e, nullptr);
+    //velocityEnabled
+    if (resizeEnabled) {
+        if (onLegnthChange != nullptr) {
+            onLegnthChange(this, startWidth-e.getPosition().getX());
+        }
 //        if (onDragging != nullptr) {
 //            onDragging(this, e);
 //        }
     }
+    else if (velocityEnabled) {
+        int velocityDiff = e.getDistanceFromDragStartY() * -0.5;
+        int newVelocity = startVelocity + velocityDiff;
+        if (newVelocity < 1) {
+            newVelocity = 1;
+        }
+        else if (newVelocity > 127) {
+            newVelocity = 127;
+        }
+        model.velocity = newVelocity;
+        repaint();
+//        std::cout << velocityDiff << "\n";
+        
+    }
     else {
-            if (onLegnthChange != nullptr) {
-                onLegnthChange(this, startWidth-e.getPosition().getX());
-            }
+        setMouseCursor(MouseCursor::DraggingHandCursor);
+        dragComponent(this, e, nullptr);
+        
         
     }
     

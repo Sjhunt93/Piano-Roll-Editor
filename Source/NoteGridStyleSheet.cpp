@@ -6,3 +6,23 @@
 //
 
 #include "NoteGridStyleSheet.hpp"
+
+NoteGridStyleSheet::NoteGridStyleSheet ()
+{
+    drawMIDINum = false;
+    drawMIDINoteStr = false;
+    drawVelocity = false;
+}
+
+bool NoteGridStyleSheet::getDrawMIDINum ()
+{
+    return drawMIDINum;
+}
+bool NoteGridStyleSheet::getDrawMIDINoteStr ()
+{
+    return drawMIDINoteStr;
+}
+bool NoteGridStyleSheet::getDrawVelocity ()
+{
+    return drawVelocity;
+}

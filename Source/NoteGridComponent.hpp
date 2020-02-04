@@ -9,6 +9,7 @@
 #define NoteGridComponent_hpp
 
 #include "NoteComponent.hpp"
+#include "NoteGridStyleSheet.hpp"
 
 class SelectionBox : public Component {
 public:
@@ -28,7 +29,7 @@ public KeyListener
 public:
     
 
-    NoteGridComponent ();
+    NoteGridComponent (NoteGridStyleSheet & styleSheet);
     ~NoteGridComponent ();
     
     void paint (Graphics & g);
@@ -58,10 +59,11 @@ public:
     bool keyPressed (const KeyPress& key, Component* originatingComponent);
     void deleteAllSelected ();
     
-    // From here you could convert this into MIDI or anyother custom musical encoding.
+    // From here you could convert this into MIDI or any other custom musical encoding.
     Sequence getSequence ();
     
 private:
+    NoteGridStyleSheet & styleSheet;
     std::vector<NoteComponent *> noteComps;
     float noteCompHeight;
     float pixelsPerBar;

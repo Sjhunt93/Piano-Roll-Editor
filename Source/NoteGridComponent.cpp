@@ -11,7 +11,7 @@
 
 
 
-NoteGridComponent::NoteGridComponent ()
+NoteGridComponent::NoteGridComponent (NoteGridStyleSheet & ss) : styleSheet(ss)
 {
     blackPitches.add(1);
     blackPitches.add(3);
@@ -46,8 +46,8 @@ void NoteGridComponent::paint (Graphics & g)
                 g.setColour(Colours::lightgrey.darker().withAlpha(0.5f));
             }
             g.fillRect(0, (int)line, getWidth(), (int)noteCompHeight);
-            g.setColour(Colours::white);
-            g.drawText(String(i), 5, line, 40, noteCompHeight, Justification::left);
+//            g.setColour(Colours::white);
+//            g.drawText(String(i), 5, line, 40, noteCompHeight, Justification::left);
             line += noteCompHeight;
             g.setColour(Colours::black);
             g.drawLine(0, line, getWidth(), line);
@@ -84,8 +84,7 @@ void NoteGridComponent::resized ()
             noteCompPositionMoved(component, false);
         }
         const float xPos = (component->getModel().startTime / ((float) ticksPerTimeSignature)) * pixelsPerBar;
-        jassert(component->getModel().note != 127);
-        const float noteRatio = (component->getModel().note / 127.0);
+
 //        const float yPos = getHeight() - (noteRatio * getHeight());
         const float yPos = (getHeight() - (component->getModel().note * noteCompHeight)) - noteCompHeight;
         float len = (component->getModel().noteLegnth / ((float) ticksPerTimeSignature)) * pixelsPerBar;
@@ -103,7 +102,7 @@ void NoteGridComponent::setupGrid (float px, float compHeight)
 {
     pixelsPerBar = px;
     noteCompHeight = compHeight;
-    setSize(pixelsPerBar * 10, compHeight * 128); //we have 128 slots for notes
+    setSize(pixelsPerBar * 10, compHeight * 128); //we have 128 slots for notes and we draw 10 bars by default..
 }
 
 void NoteGridComponent::noteCompSelected (NoteComponent * nc, const MouseEvent& e)
@@ -246,7 +245,7 @@ void NoteGridComponent::mouseDoubleClick (const MouseEvent& e)
     jassert(note >= 0 && note <= 127);
     
     //set up lambdas..
-    NoteComponent * nn = new NoteComponent();
+    NoteComponent * nn = new NoteComponent(styleSheet);
     nn->onNoteSelect = [this](NoteComponent * n, const MouseEvent& e) {
         this->noteCompSelected(n, e);
     };
@@ -349,6 +348,9 @@ Sequence NoteGridComponent::getSequence ()
     int leftToSort = (int) noteComps.size();
     
     std::vector<NoteComponent *> componentsCopy = noteComps;
+    /*
+     inline lambda function to find the lowest startTime
+     */
     auto findLowest = [&]() -> int {
         int lowestIndex = 0;
         for (int i = 0; i < componentsCopy.size(); i++) {
@@ -364,6 +366,7 @@ Sequence NoteGridComponent::getSequence ()
     while (leftToSort) {
         const int index = findLowest();
         seq.events.push_back(componentsCopy[index]->getModel());
+        componentsCopy[index] = nullptr;
         componentsCopy.erase(componentsCopy.begin() + index);
         leftToSort--;
     }
