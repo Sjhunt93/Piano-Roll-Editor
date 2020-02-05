@@ -53,7 +53,7 @@ void NoteComponent::paint (Graphics & g)
     }
     String toDraw;
     if (styleSheet.getDrawMIDINoteStr()) {
-        toDraw += String(pitches_names[model.note%12]) + String(model.note/12) + String(" ");
+        toDraw += String(PRE::pitches_names[model.note%12]) + String(model.note/12) + String(" ");
     }
     if (styleSheet.getDrawMIDINum()) {
         toDraw += String(model.note);

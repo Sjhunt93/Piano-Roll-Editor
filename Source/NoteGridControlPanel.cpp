@@ -59,10 +59,10 @@ NoteGridControlPanel::NoteGridControlPanel (NoteGridComponent & component, NoteG
     drawVelocity.onClick = drawMIDINotes.onClick = drawMIDIText.onClick;
     
     addAndMakeVisible(quantisationVlaue);
-    quantisationVlaue.addItem("1/64", eQuantisationValueNone+1);
-    quantisationVlaue.addItem("1/32", eQuantisationValue1_32+1);
-    quantisationVlaue.addItem("1/16", eQuantisationValue1_16+1);
-    quantisationVlaue.addItem("1/8",  eQuantisationValue1_8+1);
+    quantisationVlaue.addItem("1/64", PRE::eQuantisationValueNone+1);
+    quantisationVlaue.addItem("1/32", PRE::eQuantisationValue1_32+1);
+    quantisationVlaue.addItem("1/16", PRE::eQuantisationValue1_16+1);
+    quantisationVlaue.addItem("1/8",  PRE::eQuantisationValue1_8+1);
     quantisationVlaue.setSelectedItemIndex(0);
     
     quantisationVlaue.onChange = [this]()

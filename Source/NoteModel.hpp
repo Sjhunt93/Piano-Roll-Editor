@@ -8,7 +8,7 @@
 #ifndef NoteModel_hpp
 #define NoteModel_hpp
 
-#include "Constants.h"
+#include "PConstants.h"
 #include <vector>
 #include <iostream>
 

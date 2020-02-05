@@ -67,7 +67,7 @@ private:
     std::vector<NoteComponent *> noteComps;
     float noteCompHeight;
     float pixelsPerBar;
-    st_int ticksPerTimeSignature = defaultResolution * 4; //4/4 assume
+    st_int ticksPerTimeSignature = PRE::defaultResolution * 4; //4/4 assume
     
     Array<int> blackPitches;
     

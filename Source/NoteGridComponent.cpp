@@ -21,8 +21,8 @@ NoteGridComponent::NoteGridComponent (NoteGridStyleSheet & ss) : styleSheet(ss)
     addChildComponent(&selectorBox);
     addKeyListener(this);
     setWantsKeyboardFocus(true);
-    currentQValue = quantisedDivisionValues[eQuantisationValue1_32];
-    lastNoteLength = quantisedDivisionValues[eQuantisationValue1_4];
+    currentQValue = PRE::quantisedDivisionValues[PRE::eQuantisationValue1_32];
+    lastNoteLength = PRE::quantisedDivisionValues[PRE::eQuantisationValue1_4];
     firstDrag = false;
 }
 NoteGridComponent::~NoteGridComponent ()
@@ -110,8 +110,8 @@ void NoteGridComponent::setupGrid (float px, float compHeight)
 
 void NoteGridComponent::setQuantisation (const int val)
 {
-    if (val >= 0 && val <= eQuantisationValueTotal) {
-        currentQValue = quantisedDivisionValues[val];
+    if (val >= 0 && val <= PRE::eQuantisationValueTotal) {
+        currentQValue = PRE::quantisedDivisionValues[val];
     }
 }
 
@@ -467,7 +467,7 @@ void NoteGridComponent::loadSequence (Sequence sq)
         };
         addAndMakeVisible(nn);
         NoteModel nModel(event);
-        nModel.quantiseModel(defaultResolution / 8, true, true);
+//        nModel.quantiseModel(PRE::defaultResolution / 8, true, true);
         nn->setValues(nModel);
         
         noteComps.push_back(nn);
