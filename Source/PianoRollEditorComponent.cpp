@@ -39,6 +39,8 @@ PianoRollEditorComponent::PianoRollEditorComponent() : noteGrid(styleSheet), not
     {
         setup(10, pixelsPerBar, noteHeight);
     };
+    
+    
 //    setup(10, <#const int pixelsPerBar#>, <#const int noteHeight#>)
     
 #if 0 //some test code for setting the notes on the grid
@@ -70,7 +72,7 @@ void PianoRollEditorComponent::paint (Graphics& g)
 
 void PianoRollEditorComponent::resized()
 {
-    viewportGrid.setBounds(80, 50, getWidth()-90, noteGridPanel.isVisible() ? getHeight()-180 : getHeight() - 40);
+    viewportGrid.setBounds(80, 50, getWidth()-90, noteGridPanel.isVisible() ? getHeight()-180 : getHeight() - 55);
     viewportTimeline.setBounds(viewportGrid.getX(), 5, viewportGrid.getWidth()-10, viewportGrid.getY() - 5);
     viewportPiano.setBounds(5, viewportGrid.getY(), 70, viewportGrid.getHeight()- 10);
     
@@ -103,8 +105,14 @@ void PianoRollEditorComponent::setup (const int bars, const int pixelsPerBar, co
 void PianoRollEditorComponent::loadSequence (PRESequence sequence)
 {
     noteGrid.loadSequence(sequence);
+    setScroll(0.0, 0.5);
 }
 PRESequence PianoRollEditorComponent::getSequence ()
 {
     return noteGrid.getSequence();
+}
+
+void PianoRollEditorComponent::setScroll (double x, double y)
+{
+    viewportGrid.setViewPositionProportionately(x, y);
 }

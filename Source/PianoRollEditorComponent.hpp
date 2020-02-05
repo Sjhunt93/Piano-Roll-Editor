@@ -73,6 +73,7 @@ public:
     void loadSequence (PRESequence sequence);
     PRESequence getSequence ();
     
+    void setScroll (double x, double y);
 private:
     //==============================================================================
     // Your private member variables go here...

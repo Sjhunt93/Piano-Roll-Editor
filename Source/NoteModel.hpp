@@ -34,6 +34,9 @@ public:
     int tsLow;
     int tsHight;
     
+    int lowNote;
+    int highNote;
+    
     void print ();
 };
 
