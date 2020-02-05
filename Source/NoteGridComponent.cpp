@@ -82,7 +82,7 @@ void NoteGridComponent::resized ()
 {
     
     //    void mouseDoubleClick (const MouseEvent&);
-    for (NoteComponent * component : noteComps) {
+    for (auto component : noteComps) {
         if (component->coordiantesDiffer) {
             noteCompPositionMoved(component, false);
         }
@@ -115,19 +115,19 @@ void NoteGridComponent::setQuantisation (const int val)
     }
 }
 
-void NoteGridComponent::noteCompSelected (NoteComponent * nc, const MouseEvent& e)
+void NoteGridComponent::noteCompSelected (PNoteComponent * nc, const MouseEvent& e)
 {
-    for (NoteComponent * component : noteComps) {
+    for (auto component : noteComps) {
         if (component == nc) {
-            component->setState(NoteComponent::eSelected);
+            component->setState(PNoteComponent::eSelected);
             component->toFront(true);
         }
-        else if (component->getState() == NoteComponent::eSelected && !e.mods.isShiftDown() && !nc->wasDragging ) {
-            component->setState(NoteComponent::eNone);
+        else if (component->getState() == PNoteComponent::eSelected && !e.mods.isShiftDown() && !nc->wasDragging ) {
+            component->setState(PNoteComponent::eNone);
         }
     }
 }
-void NoteGridComponent::noteCompPositionMoved (NoteComponent * comp, bool callResize)
+void NoteGridComponent::noteCompPositionMoved (PNoteComponent * comp, bool callResize)
 {
     
     if (!firstDrag) {
@@ -137,7 +137,7 @@ void NoteGridComponent::noteCompPositionMoved (NoteComponent * comp, bool callRe
         
         // we want to move all the components...
         for (auto n : noteComps) {
-            if (n != comp && n->getState() == NoteComponent::eSelected) {
+            if (n != comp && n->getState() == PNoteComponent::eSelected) {
 //                n->setTopLeftPosition(n->getX() + movedX, n->getY() + movedY);
                 
                 noteCompPositionMoved(n, false);
@@ -182,10 +182,10 @@ void NoteGridComponent::noteCompPositionMoved (NoteComponent * comp, bool callRe
     }
 }
 
-void NoteGridComponent::noteCompLengthChanged (NoteComponent * original, int diff)
+void NoteGridComponent::noteCompLengthChanged (PNoteComponent * original, int diff)
 {
     for (auto n : noteComps) {
-        if (n->getState() == NoteComponent::eSelected || n == original) {
+        if (n->getState() == PNoteComponent::eSelected || n == original) {
             if (n->startWidth == -1) {
                 n->startWidth = n->getWidth();
                 n->coordiantesDiffer = true;
@@ -201,11 +201,11 @@ void NoteGridComponent::noteCompLengthChanged (NoteComponent * original, int dif
     }
 }
 
-void NoteGridComponent::noteCompDragging (NoteComponent* original, const MouseEvent& event)
+void NoteGridComponent::noteCompDragging (PNoteComponent* original, const MouseEvent& event)
 {
     
     for (auto n : noteComps) {
-        if (n->getState() == NoteComponent::eSelected && n != original) {
+        if (n->getState() == PNoteComponent::eSelected && n != original) {
             
             const int movedX = event.getDistanceFromDragStartX();// (event.getx - original->startX);
             const int movedY = event.getDistanceFromDragStartY(); //(original->getY() - original->startY);
@@ -247,8 +247,8 @@ void NoteGridComponent::setPositions ()
 
 void NoteGridComponent::mouseDown (const MouseEvent&)
 {
-    for (NoteComponent * component : noteComps) {
-        component->setState(NoteComponent::eNone);
+    for (PNoteComponent * component : noteComps) {
+        component->setState(PNoteComponent::eNone);
     }
 }
 void NoteGridComponent::mouseDrag (const MouseEvent& e)
@@ -287,12 +287,12 @@ void NoteGridComponent::mouseUp (const MouseEvent&)
     if (selectorBox.isVisible()) {
         
         
-        for (NoteComponent * component : noteComps) {
+        for (PNoteComponent * component : noteComps) {
             if (component->getBounds().intersects(selectorBox.getBounds())) {
-                component->setState(NoteComponent::eState::eSelected);
+                component->setState(PNoteComponent::eState::eSelected);
             }
             else {
-                component->setState(NoteComponent::eState::eNone);
+                component->setState(PNoteComponent::eState::eNone);
             }
         }
         selectorBox.setVisible(false);
@@ -311,17 +311,17 @@ void NoteGridComponent::mouseDoubleClick (const MouseEvent& e)
     jassert(note >= 0 && note <= 127);
     
     //set up lambdas..
-    NoteComponent * nn = new NoteComponent(styleSheet);
-    nn->onNoteSelect = [this](NoteComponent * n, const MouseEvent& e) {
+    PNoteComponent * nn = new PNoteComponent(styleSheet);
+    nn->onNoteSelect = [this](PNoteComponent * n, const MouseEvent& e) {
         this->noteCompSelected(n, e);
     };
-    nn->onPositionMoved = [this](NoteComponent * n) {
+    nn->onPositionMoved = [this](PNoteComponent * n) {
         this->noteCompPositionMoved(n);
     };
-    nn->onLegnthChange = [this](NoteComponent * n, int diff) {
+    nn->onLegnthChange = [this](PNoteComponent * n, int diff) {
         this->noteCompLengthChanged(n, diff);
     };
-    nn->onDragging = [this](NoteComponent * n, const MouseEvent & e) {
+    nn->onDragging = [this](PNoteComponent * n, const MouseEvent & e) {
         this->noteCompDragging(n, e);
     };
     addAndMakeVisible(nn);
@@ -353,7 +353,7 @@ bool NoteGridComponent::keyPressed (const KeyPress& key, Component* originatingC
     if (key == KeyPress::upKey || key == KeyPress::downKey) {
         bool didMove = false;
         for (auto nComp : noteComps) {
-            if (nComp->getState() == NoteComponent::eSelected) {
+            if (nComp->getState() == PNoteComponent::eSelected) {
                 NoteModel nModel =  nComp->getModel();
                 (key == KeyPress::upKey) ?
                 nModel.note++ :
@@ -374,7 +374,7 @@ bool NoteGridComponent::keyPressed (const KeyPress& key, Component* originatingC
         bool didMove = false;
         const int nudgeAmount = currentQValue;
         for (auto nComp : noteComps) {
-            if (nComp->getState() == NoteComponent::eSelected) {
+            if (nComp->getState() == PNoteComponent::eSelected) {
                 NoteModel nModel =  nComp->getModel();
                 (key == KeyPress::rightKey) ?
                 nModel.startTime += nudgeAmount:
@@ -396,9 +396,9 @@ bool NoteGridComponent::keyPressed (const KeyPress& key, Component* originatingC
 
 void NoteGridComponent::deleteAllSelected ()
 {
-    std::vector<NoteComponent *> itemsToKeep;
+    std::vector<PNoteComponent *> itemsToKeep;
     for (int i = 0; i < noteComps.size(); i++) {
-        if (noteComps[i]->getState() == NoteComponent::eSelected) {
+        if (noteComps[i]->getState() == PNoteComponent::eSelected) {
             removeChildComponent(noteComps[i]);
             delete noteComps[i];
         }
@@ -413,7 +413,7 @@ Sequence NoteGridComponent::getSequence ()
 {
     int leftToSort = (int) noteComps.size();
     
-    std::vector<NoteComponent *> componentsCopy = noteComps;
+    std::vector<PNoteComponent *> componentsCopy = noteComps;
     /*
      inline lambda function to find the lowest startTime
      */
@@ -452,17 +452,17 @@ void NoteGridComponent::loadSequence (Sequence sq)
     noteComps.reserve(sq.events.size());
     
     for (auto event : sq.events) {
-        NoteComponent * nn = new NoteComponent(styleSheet);
-        nn->onNoteSelect = [this](NoteComponent * n, const MouseEvent& e) {
+        PNoteComponent * nn = new PNoteComponent(styleSheet);
+        nn->onNoteSelect = [this](PNoteComponent * n, const MouseEvent& e) {
             this->noteCompSelected(n, e);
         };
-        nn->onPositionMoved = [this](NoteComponent * n) {
+        nn->onPositionMoved = [this](PNoteComponent * n) {
             this->noteCompPositionMoved(n);
         };
-        nn->onLegnthChange = [this](NoteComponent * n, int diff) {
+        nn->onLegnthChange = [this](PNoteComponent * n, int diff) {
             this->noteCompLengthChanged(n, diff);
         };
-        nn->onDragging = [this](NoteComponent * n, const MouseEvent & e) {
+        nn->onDragging = [this](PNoteComponent * n, const MouseEvent & e) {
             this->noteCompDragging(n, e);
         };
         addAndMakeVisible(nn);

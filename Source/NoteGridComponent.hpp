@@ -8,7 +8,7 @@
 #ifndef NoteGridComponent_hpp
 #define NoteGridComponent_hpp
 
-#include "NoteComponent.hpp"
+#include "PNoteComponent.hpp"
 #include "NoteGridStyleSheet.hpp"
 
 class SelectionBox : public Component {
@@ -35,10 +35,10 @@ public:
     void paint (Graphics & g);
     void resized ();
     
-    void noteCompSelected (NoteComponent *, const MouseEvent&);
-    void noteCompPositionMoved (NoteComponent *, bool callResize = true);
-    void noteCompLengthChanged (NoteComponent *, int diff);
-    void noteCompDragging (NoteComponent*, const MouseEvent&);
+    void noteCompSelected (PNoteComponent *, const MouseEvent&);
+    void noteCompPositionMoved (PNoteComponent *, bool callResize = true);
+    void noteCompLengthChanged (PNoteComponent *, int diff);
+    void noteCompDragging (PNoteComponent*, const MouseEvent&);
     void setPositions ();
     
     /*
@@ -64,7 +64,7 @@ public:
     
 private:
     NoteGridStyleSheet & styleSheet;
-    std::vector<NoteComponent *> noteComps;
+    std::vector<PNoteComponent *> noteComps;
     float noteCompHeight;
     float pixelsPerBar;
     st_int ticksPerTimeSignature = PRE::defaultResolution * 4; //4/4 assume

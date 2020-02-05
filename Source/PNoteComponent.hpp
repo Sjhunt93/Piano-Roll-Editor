@@ -1,19 +1,19 @@
 //
-//  NoteComponent.hpp
+//  PNoteComponent.hpp
 //  PianoRollEditor - App
 //
 //  Created by Samuel Hunt on 16/08/2019.
 //
 
-#ifndef NoteComponent_hpp
-#define NoteComponent_hpp
+#ifndef PNoteComponent_hpp
+#define PNoteComponent_hpp
 
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "NoteModel.hpp"
 #include "NoteGridStyleSheet.hpp"
 
-class NoteComponent :
+class PNoteComponent :
 public Component,
 public ComponentDragger
 {
@@ -29,8 +29,8 @@ public:
         Rectangle<int> startingBounds;
     };
     
-    NoteComponent (NoteGridStyleSheet & styleSheet);
-    ~NoteComponent ();
+    PNoteComponent (NoteGridStyleSheet & styleSheet);
+    ~PNoteComponent ();
     
     void paint (Graphics & g);
     void resized ();
@@ -52,11 +52,11 @@ public:
     
 //    void mouseDoubleClick (const MouseEvent&);
     
-    std::function<void(NoteComponent*, const MouseEvent&)> onNoteSelect;
-    std::function<void(NoteComponent*)> onPositionMoved;
+    std::function<void(PNoteComponent*, const MouseEvent&)> onNoteSelect;
+    std::function<void(PNoteComponent*)> onPositionMoved;
 //    std::function<void(NoteComponent*, int, int)> onDragging;
-    std::function<void(NoteComponent*, const MouseEvent&)> onDragging; //send the drag event to other components..
-    std::function<void(NoteComponent*, int)> onLegnthChange; //sends the difference as this is relative for all components.
+    std::function<void(PNoteComponent*, const MouseEvent&)> onDragging; //send the drag event to other components..
+    std::function<void(PNoteComponent*, int)> onLegnthChange; //sends the difference as this is relative for all components.
     
     int minWidth = 10;
     int startWidth; //used when resizing the noteComponents length

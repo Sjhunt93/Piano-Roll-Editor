@@ -5,10 +5,10 @@
 //  Created by Samuel Hunt on 16/08/2019.
 //
 
-#include "NoteComponent.hpp"
+#include "PNoteComponent.hpp"
 
 
-NoteComponent::NoteComponent (NoteGridStyleSheet & ss) : styleSheet(ss), edgeResizer(this, nullptr, ResizableEdgeComponent::Edge::rightEdge)
+PNoteComponent::PNoteComponent (NoteGridStyleSheet & ss) : styleSheet(ss), edgeResizer(this, nullptr, ResizableEdgeComponent::Edge::rightEdge)
 {
     mouseOver = useCustomColour = false;
     addAndMakeVisible(edgeResizer);
@@ -18,12 +18,12 @@ NoteComponent::NoteComponent (NoteGridStyleSheet & ss) : styleSheet(ss), edgeRes
     isMultiDrag = false;
     
 }
-NoteComponent::~NoteComponent ()
+PNoteComponent::~PNoteComponent ()
 {
     
 }
 
-void NoteComponent::paint (Graphics & g)
+void PNoteComponent::paint (Graphics & g)
 {
     g.fillAll(Colours::darkgrey); //border...
     Colour cToUse;
@@ -63,17 +63,17 @@ void NoteComponent::paint (Graphics & g)
     g.drawText(String(toDraw), 3, 3, getWidth() - 6, getHeight() - 6, Justification::centred);
     
 }
-void NoteComponent::resized ()
+void PNoteComponent::resized ()
 {
 //    edgeResizer.setBounds(getWidth() - 10, getHeight(), 10, getHeight());
 }
-void NoteComponent::setCustomColour (Colour c)
+void PNoteComponent::setCustomColour (Colour c)
 {
     customColour = c;
     useCustomColour = true;
 }
 
-void NoteComponent::setValues (NoteModel m)
+void PNoteComponent::setValues (NoteModel m)
 {
     
     
@@ -85,34 +85,34 @@ void NoteComponent::setValues (NoteModel m)
     repaint();
 
 }
-NoteModel NoteComponent::getModel ()
+NoteModel PNoteComponent::getModel ()
 {
     return model;
 }
 
-void NoteComponent::setState (eState s)
+void PNoteComponent::setState (eState s)
 {
     state = s;
     repaint();
 }
-NoteComponent::eState NoteComponent::getState ()
+PNoteComponent::eState PNoteComponent::getState ()
 {
     return state;
 }
 
-void NoteComponent::mouseEnter (const MouseEvent&)
+void PNoteComponent::mouseEnter (const MouseEvent&)
 {
     mouseOver = true;
     repaint();
 }
-void NoteComponent::mouseExit  (const MouseEvent&)
+void PNoteComponent::mouseExit  (const MouseEvent&)
 {
     mouseOver = false;
     setMouseCursor(MouseCursor::NormalCursor);
     repaint();
     
 }
-void NoteComponent::mouseDown  (const MouseEvent& e)
+void PNoteComponent::mouseDown  (const MouseEvent& e)
 {
 //    startX = getX();
 //    startY = getY();
@@ -135,7 +135,7 @@ void NoteComponent::mouseDown  (const MouseEvent& e)
     
     
 }
-void NoteComponent::mouseUp    (const MouseEvent& e)
+void PNoteComponent::mouseUp    (const MouseEvent& e)
 {
     if (onPositionMoved != nullptr) {
         onPositionMoved(this);
@@ -152,7 +152,7 @@ void NoteComponent::mouseUp    (const MouseEvent& e)
     wasDragging = false;
     
 }
-void NoteComponent::mouseDrag  (const MouseEvent& e)
+void PNoteComponent::mouseDrag  (const MouseEvent& e)
 {
     //velocityEnabled
     if (resizeEnabled) {
@@ -185,7 +185,7 @@ void NoteComponent::mouseDrag  (const MouseEvent& e)
     }
     
 }
-void NoteComponent::mouseMove  (const MouseEvent& e)
+void PNoteComponent::mouseMove  (const MouseEvent& e)
 {
     if (getWidth() - e.getMouseDownX() < 10) {
         setMouseCursor(MouseCursor::RightEdgeResizeCursor);
