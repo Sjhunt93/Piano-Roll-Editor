@@ -32,6 +32,7 @@ private:
     Slider pixelsPerBar;
     TextButton render;
     ToggleButton drawMIDINotes, drawMIDIText, drawVelocity;
+    ComboBox quantisationVlaue;
 };
 
 #endif /* NoteGridControlPanel_hpp */

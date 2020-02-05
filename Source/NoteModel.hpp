@@ -44,10 +44,10 @@ public:
     {
         auto quantiseValue = [&](int qDiv, int valueToQuantise) -> int
         {
-            const int lessThen = valueToQuantise % qDiv;
+//            const int lessThen = valueToQuantise % qDiv;
             const int simpleQ = (valueToQuantise / qDiv) * qDiv; //use lossey int division
             const int simpleQ1 = ((valueToQuantise / qDiv)+1) * qDiv; //use lossey int division
-            if (valueToQuantise-simpleQ < simpleQ1-valueToQuantise) {
+            if (valueToQuantise-simpleQ < simpleQ1-valueToQuantise) { //lower boundry
                 return simpleQ;
             }
             return simpleQ1;
@@ -58,6 +58,9 @@ public:
         }
         if (qNoteLegnth) {
             noteLegnth = quantiseValue(qValue, noteLegnth);
+            if (noteLegnth == 0) {
+                noteLegnth = qValue; //
+            }
         }
         
     }

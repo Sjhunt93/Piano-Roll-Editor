@@ -44,9 +44,6 @@ public:
     /*
     void mouseEnter (const MouseEvent&);
     void mouseExit  (const MouseEvent&);
-    void mouseDown  (const MouseEvent&);
-    void mouseUp    (const MouseEvent&);
-    void mouseDrag  (const MouseEvent&);
     void mouseMove  (const MouseEvent&);
     */
     void mouseDown  (const MouseEvent&);
@@ -55,6 +52,8 @@ public:
     void mouseDoubleClick (const MouseEvent&);
     
     void setupGrid (float pixelsPerBar, float compHeight);
+    void setQuantisation (const int val);
+    
     
     bool keyPressed (const KeyPress& key, Component* originatingComponent);
     void deleteAllSelected ();
@@ -73,5 +72,7 @@ private:
     Array<int> blackPitches;
     
     SelectionBox selectorBox;
+    st_int currentQValue;
+    st_int lastNoteLength;
 };
 #endif /* NoteGridComponent_hpp */

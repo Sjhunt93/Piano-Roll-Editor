@@ -58,7 +58,7 @@ public:
     std::function<void(NoteComponent*, const MouseEvent&)> onDragging; //send the drag event to other components..
     std::function<void(NoteComponent*, int)> onLegnthChange; //sends the difference as this is relative for all components.
     
-    int minWidth = 20;
+    int minWidth = 10;
     int startWidth; //used when resizing the noteComponents length
     bool coordiantesDiffer; //sometimes the size of this component gets changed externally (for example on multi-resizing) set this flag to be true and at some point the internal model will get updated also
 //    MultiEditState getMultiEditState ();

@@ -21,6 +21,8 @@ NoteGridComponent::NoteGridComponent (NoteGridStyleSheet & ss) : styleSheet(ss)
     addChildComponent(&selectorBox);
     addKeyListener(this);
     setWantsKeyboardFocus(true);
+    currentQValue = quantisedDivisionValues[eQuantisationValue1_32];
+    lastNoteLength = quantisedDivisionValues[eQuantisationValue1_4];
 }
 NoteGridComponent::~NoteGridComponent ()
 {
@@ -105,6 +107,13 @@ void NoteGridComponent::setupGrid (float px, float compHeight)
     setSize(pixelsPerBar * 10, compHeight * 128); //we have 128 slots for notes and we draw 10 bars by default..
 }
 
+void NoteGridComponent::setQuantisation (const int val)
+{
+    if (val >= 0 && val <= eQuantisationValueTotal) {
+        currentQValue = quantisedDivisionValues[val];
+    }
+}
+
 void NoteGridComponent::noteCompSelected (NoteComponent * nc, const MouseEvent& e)
 {
     for (NoteComponent * component : noteComps) {
@@ -137,7 +146,9 @@ void NoteGridComponent::noteCompPositionMoved (NoteComponent * comp, bool callRe
     nm.note = note;
     nm.startTime = xPos;
     nm.noteLegnth = len;
-    nm.quantiseModel(defaultResolution / 8, true, true);
+    nm.quantiseModel(currentQValue, true, true);
+    
+    lastNoteLength = nm.noteLegnth;
     
     comp->setValues(nm);
     if (callResize) {
@@ -259,8 +270,8 @@ void NoteGridComponent::mouseDoubleClick (const MouseEvent& e)
         this->noteCompDragging(n, e);
     };
     addAndMakeVisible(nn);
-    NoteModel nModel = {(u8)note, (u8) ((arc4random() % 60) + 60), (st_int)xPos, 480/2};
-    nModel.quantiseModel(defaultResolution / 8, true, true);
+    NoteModel nModel((u8)note, (u8) ((arc4random() % 60) + 60), (st_int)xPos, lastNoteLength);
+    nModel.quantiseModel(currentQValue, true, true);
     nn->setValues(nModel);
     
 
@@ -306,7 +317,7 @@ bool NoteGridComponent::keyPressed (const KeyPress& key, Component* originatingC
     }
     if (key == KeyPress::leftKey || key == KeyPress::rightKey) {
         bool didMove = false;
-        const int nudgeAmount = defaultResolution / 16;
+        const int nudgeAmount = currentQValue;
         for (auto nComp : noteComps) {
             if (nComp->getState() == NoteComponent::eSelected) {
                 NoteModel nModel =  nComp->getModel();
