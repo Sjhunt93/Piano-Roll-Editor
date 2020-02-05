@@ -25,10 +25,10 @@ void KeyboardComponent::paint (Graphics & g)
         for (int i = 127; i >= 0; i--) {
             
             if (blackPitches.contains(i%12)) {
-                g.setColour(Colours::darkgrey.withAlpha(0.5f));
+                g.setColour(Colours::darkgrey);
             }
             else {
-                g.setColour(Colours::lightgrey.darker().withAlpha(0.5f));
+                g.setColour(Colours::lightgrey.darker());
             }
             g.fillRect(0, (int)line, getWidth(), (int)noteCompHeight);
             g.setColour(Colours::white);

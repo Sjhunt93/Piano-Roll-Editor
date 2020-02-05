@@ -409,7 +409,7 @@ void NoteGridComponent::deleteAllSelected ()
     noteComps = itemsToKeep;
 }
 
-Sequence NoteGridComponent::getSequence ()
+PRESequence NoteGridComponent::getSequence ()
 {
     int leftToSort = (int) noteComps.size();
     
@@ -428,7 +428,7 @@ Sequence NoteGridComponent::getSequence ()
     };
     
     
-    Sequence seq;
+    PRESequence seq;
     while (leftToSort) {
         const int index = findLowest();
         seq.events.push_back(componentsCopy[index]->getModel());
@@ -440,7 +440,7 @@ Sequence NoteGridComponent::getSequence ()
     return seq;
 }
 
-void NoteGridComponent::loadSequence (Sequence sq)
+void NoteGridComponent::loadSequence (PRESequence sq)
 {
     for (int i = 0; i < noteComps.size(); i++) {
         removeChildComponent(noteComps[i]);

@@ -59,8 +59,8 @@ public:
     void deleteAllSelected ();
     
     // From here you could convert this into MIDI or any other custom musical encoding.
-    Sequence getSequence ();
-    void loadSequence (Sequence sq);
+    PRESequence getSequence ();
+    void loadSequence (PRESequence sq);
     
 private:
     NoteGridStyleSheet & styleSheet;
