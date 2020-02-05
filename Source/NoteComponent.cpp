@@ -13,8 +13,9 @@ NoteComponent::NoteComponent (NoteGridStyleSheet & ss) : styleSheet(ss), edgeRes
     mouseOver = useCustomColour = false;
     addAndMakeVisible(edgeResizer);
     setMouseCursor(normal);
-    startWidth = -1;
+    startWidth = startX = startY = -1;
     coordiantesDiffer = false;
+    isMultiDrag = false;
     
 }
 NoteComponent::~NoteComponent ()
@@ -113,6 +114,8 @@ void NoteComponent::mouseExit  (const MouseEvent&)
 }
 void NoteComponent::mouseDown  (const MouseEvent& e)
 {
+//    startX = getX();
+//    startY = getY();
     if (e.mods.isShiftDown()) {
         velocityEnabled = true;
         startVelocity = model.velocity;
@@ -120,13 +123,16 @@ void NoteComponent::mouseDown  (const MouseEvent& e)
     else if (getWidth() - e.getMouseDownX() < 10) {
         resizeEnabled = true;
         startWidth = getWidth();
+        
     }
     else {
         startDraggingComponent(this, e);
+        wasDragging = true;
     }
     if (!resizeEnabled) {
         
     }
+    
     
 }
 void NoteComponent::mouseUp    (const MouseEvent& e)
@@ -137,11 +143,13 @@ void NoteComponent::mouseUp    (const MouseEvent& e)
     if (onNoteSelect != nullptr) {
         onNoteSelect(this, e);
     }
-    startWidth = -1;
+    startWidth = startX = startY -1;
     mouseOver = false;
     resizeEnabled = false;
     velocityEnabled = false;
+    isMultiDrag = false;
     repaint();
+    wasDragging = false;
     
 }
 void NoteComponent::mouseDrag  (const MouseEvent& e)
@@ -151,9 +159,7 @@ void NoteComponent::mouseDrag  (const MouseEvent& e)
         if (onLegnthChange != nullptr) {
             onLegnthChange(this, startWidth-e.getPosition().getX());
         }
-//        if (onDragging != nullptr) {
-//            onDragging(this, e);
-//        }
+
     }
     else if (velocityEnabled) {
         int velocityDiff = e.getDistanceFromDragStartY() * -0.5;
@@ -173,7 +179,9 @@ void NoteComponent::mouseDrag  (const MouseEvent& e)
         setMouseCursor(MouseCursor::DraggingHandCursor);
         dragComponent(this, e, nullptr);
         
-        
+        if (onDragging != nullptr ) { //&& isMultiDrag
+            onDragging(this, e);
+        }
     }
     
 }

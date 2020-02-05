@@ -23,6 +23,7 @@ NoteGridComponent::NoteGridComponent (NoteGridStyleSheet & ss) : styleSheet(ss)
     setWantsKeyboardFocus(true);
     currentQValue = quantisedDivisionValues[eQuantisationValue1_32];
     lastNoteLength = quantisedDivisionValues[eQuantisationValue1_4];
+    firstDrag = false;
 }
 NoteGridComponent::~NoteGridComponent ()
 {
@@ -121,13 +122,36 @@ void NoteGridComponent::noteCompSelected (NoteComponent * nc, const MouseEvent& 
             component->setState(NoteComponent::eSelected);
             component->toFront(true);
         }
-        else if (component->getState() == NoteComponent::eSelected && !e.mods.isShiftDown() ) {
+        else if (component->getState() == NoteComponent::eSelected && !e.mods.isShiftDown() && !nc->wasDragging ) {
             component->setState(NoteComponent::eNone);
         }
     }
 }
 void NoteGridComponent::noteCompPositionMoved (NoteComponent * comp, bool callResize)
 {
+    
+    if (!firstDrag) {
+//        const int movedX = (comp->getX() - comp->startX);
+//        const int movedY = (comp->getY() - comp->startY);
+        firstDrag = true;
+        
+        // we want to move all the components...
+        for (auto n : noteComps) {
+            if (n != comp && n->getState() == NoteComponent::eSelected) {
+//                n->setTopLeftPosition(n->getX() + movedX, n->getY() + movedY);
+                
+                noteCompPositionMoved(n, false);
+            }
+        }
+        firstDrag = false;
+        
+    }
+    
+    
+    
+    
+    
+    
     int xPos = (comp->getX() / ((float)pixelsPerBar)) * ticksPerTimeSignature;
     int note = 127 - (comp->getY() / noteCompHeight);
     if (note > 127) {
@@ -150,6 +174,8 @@ void NoteGridComponent::noteCompPositionMoved (NoteComponent * comp, bool callRe
     
     lastNoteLength = nm.noteLegnth;
     
+    comp->startY = -1;
+    comp->startX = -1;
     comp->setValues(nm);
     if (callResize) {
         resized();
@@ -177,8 +203,37 @@ void NoteGridComponent::noteCompLengthChanged (NoteComponent * original, int dif
 
 void NoteGridComponent::noteCompDragging (NoteComponent* original, const MouseEvent& event)
 {
+    
     for (auto n : noteComps) {
         if (n->getState() == NoteComponent::eSelected && n != original) {
+            
+            const int movedX = event.getDistanceFromDragStartX();// (event.getx - original->startX);
+            const int movedY = event.getDistanceFromDragStartY(); //(original->getY() - original->startY);
+            
+            if (!firstCall) {
+                firstCall = true;
+                jassert(n->startX == -1 && n->startY == -1);
+            }
+            if (n->startY == -1) {
+                n->startX = n->getX();
+                n->startY = n->getY();
+                jassert(n->startX > 0 && n->startY > 0);
+                
+            }
+            
+            
+//            jassert(abs(n->startX + movedX) < 100);
+            
+            
+            std::cout << "Started at: " << n->startX << " - " << n->startY << "\n";
+            std::cout << n->getBounds().toString() << "\n";
+            n->setTopLeftPosition(n->startX + movedX, n->startY + movedY);
+            std::cout << "Moved: " << movedX << " : " << movedY << " -- " << n->getX() << " : " << n->getY() <<  "\n" ;
+            std::cout << n->getBounds().toString() << "\n \n" ;
+//            if (!n->isMouseOverOrDragging()) {
+//                n->startDraggingComponent(n, event);
+//            }
+//            n->dragComponent(n, event, nullptr);
 //            n->dragComponent(n, event, nullptr);
        //     n->setTopLeftPosition(event.getMouseDownX(), event.getMouseDownY());
         }

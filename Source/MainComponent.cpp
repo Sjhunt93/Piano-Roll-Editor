@@ -43,6 +43,8 @@ MainComponent::MainComponent() : noteGrid(styleSheet), noteGridPanel(noteGrid, s
 
     };
     
+#if 0 //some test code for setting the notes on the grid
+    
     Sequence seq;
     for (int i = 0; i < 16; i++) {
         NoteModel nm;
@@ -53,7 +55,7 @@ MainComponent::MainComponent() : noteGrid(styleSheet), noteGridPanel(noteGrid, s
         seq.events.push_back(nm);
     }
     noteGrid.loadSequence(seq);
-    
+#endif
 }
 
 MainComponent::~MainComponent()

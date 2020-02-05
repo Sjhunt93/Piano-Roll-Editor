@@ -74,5 +74,7 @@ private:
     SelectionBox selectorBox;
     st_int currentQValue;
     st_int lastNoteLength;
+    bool    firstDrag;
+    bool firstCall = false;
 };
 #endif /* NoteGridComponent_hpp */

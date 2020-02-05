@@ -60,17 +60,19 @@ public:
     
     int minWidth = 10;
     int startWidth; //used when resizing the noteComponents length
+    int startX, startY;
     bool coordiantesDiffer; //sometimes the size of this component gets changed externally (for example on multi-resizing) set this flag to be true and at some point the internal model will get updated also
-//    MultiEditState getMultiEditState ();
-//    void setMultiEditState (MultiEditState state);
+    bool isMultiDrag;
     MultiEditState mEditState;
-
+    bool wasDragging;
+    
 private:
     NoteGridStyleSheet & styleSheet;
     ResizableEdgeComponent edgeResizer;
     
     bool mouseOver, useCustomColour, resizeEnabled, velocityEnabled;
     int startVelocity;
+    
     Colour customColour;
     NoteModel model;
     MouseCursor normal;
