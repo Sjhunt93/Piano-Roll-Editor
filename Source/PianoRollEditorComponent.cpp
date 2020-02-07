@@ -105,7 +105,9 @@ void PianoRollEditorComponent::setup (const int bars, const int pixelsPerBar, co
 void PianoRollEditorComponent::loadSequence (PRESequence sequence)
 {
     noteGrid.loadSequence(sequence);
-    setScroll(0.0, 0.5);
+    const int middleNote = ((sequence.highNote - sequence.lowNote) * 0.5) + sequence.lowNote;
+    const float scrollRatio = middleNote / 127.0;
+//    setScroll(0.0, scrollRatio);
 }
 PRESequence PianoRollEditorComponent::getSequence ()
 {

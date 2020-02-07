@@ -74,28 +74,23 @@ void NoteGridComponent::paint (Graphics & g)
         line += increment;
     }
     
-    
-    
-//    for (int i = 0; i < )
 }
 void NoteGridComponent::resized ()
 {
     
-    //    void mouseDoubleClick (const MouseEvent&);
     for (auto component : noteComps) {
         if (component->coordiantesDiffer) {
             noteCompPositionMoved(component, false);
         }
         const float xPos = (component->getModel().startTime / ((float) ticksPerTimeSignature)) * pixelsPerBar;
 
-//        const float yPos = getHeight() - (noteRatio * getHeight());
+
         const float yPos = (getHeight() - (component->getModel().note * noteCompHeight)) - noteCompHeight;
         float len = (component->getModel().noteLegnth / ((float) ticksPerTimeSignature)) * pixelsPerBar;
         
         component->setBounds(xPos, yPos, len, noteCompHeight);
     }
-    
-    
+
 }
 
 
@@ -131,15 +126,11 @@ void NoteGridComponent::noteCompPositionMoved (PNoteComponent * comp, bool callR
 {
     
     if (!firstDrag) {
-//        const int movedX = (comp->getX() - comp->startX);
-//        const int movedY = (comp->getY() - comp->startY);
+
         firstDrag = true;
-        
         // we want to move all the components...
         for (auto n : noteComps) {
             if (n != comp && n->getState() == PNoteComponent::eSelected) {
-//                n->setTopLeftPosition(n->getX() + movedX, n->getY() + movedY);
-                
                 noteCompPositionMoved(n, false);
             }
         }
@@ -147,11 +138,7 @@ void NoteGridComponent::noteCompPositionMoved (PNoteComponent * comp, bool callR
         
     }
     
-    
-    
-    
-    
-    
+
     int xPos = (comp->getX() / ((float)pixelsPerBar)) * ticksPerTimeSignature;
     int note = 127 - (comp->getY() / noteCompHeight);
     if (note > 127) {
@@ -222,19 +209,19 @@ void NoteGridComponent::noteCompDragging (PNoteComponent* original, const MouseE
             }
             
             
-//            jassert(abs(n->startX + movedX) < 100);
-            
-            
+
+            /*
             std::cout << "Started at: " << n->startX << " - " << n->startY << "\n";
             std::cout << n->getBounds().toString() << "\n";
             n->setTopLeftPosition(n->startX + movedX, n->startY + movedY);
             std::cout << "Moved: " << movedX << " : " << movedY << " -- " << n->getX() << " : " << n->getY() <<  "\n" ;
             std::cout << n->getBounds().toString() << "\n \n" ;
+             */
 //            if (!n->isMouseOverOrDragging()) {
 //                n->startDraggingComponent(n, event);
 //            }
 //            n->dragComponent(n, event, nullptr);
-//            n->dragComponent(n, event, nullptr);
+//            n->dragComponent(n, event, nullptr);~
        //     n->setTopLeftPosition(event.getMouseDownX(), event.getMouseDownY());
         }
 
