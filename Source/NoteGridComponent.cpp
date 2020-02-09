@@ -214,9 +214,9 @@ void NoteGridComponent::noteCompDragging (PNoteComponent* original, const MouseE
 
             /*
             std::cout << "Started at: " << n->startX << " - " << n->startY << "\n";
-            std::cout << n->getBounds().toString() << "\n";
+            std::cout << n->getBounds().toString() << "\n";*/
             n->setTopLeftPosition(n->startX + movedX, n->startY + movedY);
-            std::cout << "Moved: " << movedX << " : " << movedY << " -- " << n->getX() << " : " << n->getY() <<  "\n" ;
+            /*std::cout << "Moved: " << movedX << " : " << movedY << " -- " << n->getX() << " : " << n->getY() <<  "\n" ;
             std::cout << n->getBounds().toString() << "\n \n" ;
              */
 //            if (!n->isMouseOverOrDragging()) {
