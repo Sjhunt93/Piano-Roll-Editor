@@ -23,6 +23,8 @@ public:
     
     void renderSequence ();
     std::function<void(int pixelsPerBar, int noteHeight)> configureGrid; //p
+    
+    void setQuantisation (PRE::eQuantisationValue value);
 private:
     
     NoteGridComponent & noteGrid;

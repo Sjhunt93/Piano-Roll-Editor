@@ -63,7 +63,7 @@ NoteGridControlPanel::NoteGridControlPanel (NoteGridComponent & component, NoteG
     quantisationVlaue.addItem("1/32", PRE::eQuantisationValue1_32+1);
     quantisationVlaue.addItem("1/16", PRE::eQuantisationValue1_16+1);
     quantisationVlaue.addItem("1/8",  PRE::eQuantisationValue1_8+1);
-    quantisationVlaue.setSelectedItemIndex(0);
+    quantisationVlaue.setSelectedItemIndex(1);
     
     quantisationVlaue.onChange = [this]()
     {
@@ -73,6 +73,11 @@ NoteGridControlPanel::NoteGridControlPanel (NoteGridComponent & component, NoteG
 NoteGridControlPanel::~NoteGridControlPanel ()
 {
     
+}
+
+void NoteGridControlPanel::setQuantisation (PRE::eQuantisationValue value)
+{
+    quantisationVlaue.setSelectedItemIndex(value);
 }
 
 void NoteGridControlPanel::resized ()

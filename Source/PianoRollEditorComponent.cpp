@@ -133,3 +133,8 @@ void PianoRollEditorComponent::disableEditing (bool value)
     styleSheet.disableEditing = value;
     noteGrid.repaint();
 }
+
+NoteGridControlPanel & PianoRollEditorComponent::getControlPannel ()
+{
+    return noteGridPanel;
+}

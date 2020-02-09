@@ -77,6 +77,7 @@ public:
     void setScroll (double x, double y);
     
     void disableEditing (bool value);
+    NoteGridControlPanel & getControlPannel ();
 private:
     //==============================================================================
     // Your private member variables go here...
