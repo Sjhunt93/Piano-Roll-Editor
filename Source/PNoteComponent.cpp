@@ -28,15 +28,22 @@ PNoteComponent::~PNoteComponent ()
 
 void PNoteComponent::paint (Graphics & g)
 {
+    Colour orange(253,188,64);
+    orange = orange.brighter();
+    Colour red(252,97,92);
+    
     g.fillAll(Colours::darkgrey); //border...
     Colour cToUse;
     if (useCustomColour) {
         cToUse = customColour;
     }
     else {
-        cToUse = Colour::fromHSV(model.velocity/127.0, 1.0, 0.5, 0xFF);
-        //(model.velocity/127.0) *
+//        cToUse = Colour::fromHSV(model.velocity/127.0, 1.0, 0.5, 0xFF);
+        //cToUse = orange.interpolatedWith(red, model.velocity / 127.0);
+        cToUse = red;
     }
+    
+    
     
     if (state || mouseOver) {
         cToUse = cToUse.brighter().brighter();
