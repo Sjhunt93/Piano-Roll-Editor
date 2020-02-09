@@ -77,7 +77,7 @@ void PianoRollEditorComponent::resized()
     viewportPiano.setBounds(5, viewportGrid.getY(), 70, viewportGrid.getHeight()- 10);
     
     noteGrid.setBounds(0,0,4000, 20*127);
-    noteGrid.setupGrid(900, 20);
+    noteGrid.setupGrid(900, 20, 10);
     timelineComp.setBounds(0, 0, 100, viewportTimeline.getHeight());
     timelineComp.setup(10, 900);
     keyboardComp.setBounds(0, 0, viewportPiano.getWidth(), noteGrid.getHeight());
@@ -97,9 +97,19 @@ void PianoRollEditorComponent::setStyleSheet (NoteGridStyleSheet style)
 }
 void PianoRollEditorComponent::setup (const int bars, const int pixelsPerBar, const int noteHeight)
 {
-    noteGrid.setupGrid(pixelsPerBar, noteHeight);
+    noteGrid.setupGrid(pixelsPerBar, noteHeight, bars);
     timelineComp.setup(bars, pixelsPerBar);
     keyboardComp.setSize(viewportPiano.getWidth(), noteGrid.getHeight()); //subtract 10 for the scroll bars
+}
+
+void PianoRollEditorComponent::updateBars (const int newNumberOfBars)
+{
+    const float pPb = noteGrid.getPixelsPerBar();
+    const float nH = noteGrid.getNoteCompHeight();
+    noteGrid.setupGrid(pPb, nH, newNumberOfBars);
+    timelineComp.setup(newNumberOfBars, pPb);
+    keyboardComp.setSize(viewportPiano.getWidth(), noteGrid.getHeight());
+    
 }
 
 void PianoRollEditorComponent::loadSequence (PRESequence sequence)
@@ -117,4 +127,9 @@ PRESequence PianoRollEditorComponent::getSequence ()
 void PianoRollEditorComponent::setScroll (double x, double y)
 {
     viewportGrid.setViewPositionProportionately(x, y);
+}
+void PianoRollEditorComponent::disableEditing (bool value)
+{
+    styleSheet.disableEditing = value;
+    noteGrid.repaint();
 }

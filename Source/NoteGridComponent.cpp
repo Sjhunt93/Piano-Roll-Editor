@@ -9,7 +9,7 @@
 #include <array>
 
 
-
+#define CHECK_EDIT if(styleSheet.disableEditing) { return; }
 
 NoteGridComponent::NoteGridComponent (NoteGridStyleSheet & ss) : styleSheet(ss)
 {
@@ -96,11 +96,11 @@ void NoteGridComponent::resized ()
 
 
 
-void NoteGridComponent::setupGrid (float px, float compHeight)
+void NoteGridComponent::setupGrid (float px, float compHeight, const int bars)
 {
     pixelsPerBar = px;
     noteCompHeight = compHeight;
-    setSize(pixelsPerBar * 10, compHeight * 128); //we have 128 slots for notes and we draw 10 bars by default..
+    setSize(pixelsPerBar * bars, compHeight * 128); //we have 128 slots for notes and we draw 10 bars by default..
 }
 
 void NoteGridComponent::setQuantisation (const int val)
@@ -112,6 +112,7 @@ void NoteGridComponent::setQuantisation (const int val)
 
 void NoteGridComponent::noteCompSelected (PNoteComponent * nc, const MouseEvent& e)
 {
+    CHECK_EDIT
     for (auto component : noteComps) {
         if (component == nc) {
             component->setState(PNoteComponent::eSelected);
@@ -124,7 +125,7 @@ void NoteGridComponent::noteCompSelected (PNoteComponent * nc, const MouseEvent&
 }
 void NoteGridComponent::noteCompPositionMoved (PNoteComponent * comp, bool callResize)
 {
-    
+    CHECK_EDIT
     if (!firstDrag) {
 
         firstDrag = true;
@@ -171,6 +172,7 @@ void NoteGridComponent::noteCompPositionMoved (PNoteComponent * comp, bool callR
 
 void NoteGridComponent::noteCompLengthChanged (PNoteComponent * original, int diff)
 {
+    CHECK_EDIT
     for (auto n : noteComps) {
         if (n->getState() == PNoteComponent::eSelected || n == original) {
             if (n->startWidth == -1) {
@@ -190,7 +192,7 @@ void NoteGridComponent::noteCompLengthChanged (PNoteComponent * original, int di
 
 void NoteGridComponent::noteCompDragging (PNoteComponent* original, const MouseEvent& event)
 {
-    
+    CHECK_EDIT
     for (auto n : noteComps) {
         if (n->getState() == PNoteComponent::eSelected && n != original) {
             
@@ -234,12 +236,14 @@ void NoteGridComponent::setPositions ()
 
 void NoteGridComponent::mouseDown (const MouseEvent&)
 {
+    CHECK_EDIT
     for (PNoteComponent * component : noteComps) {
         component->setState(PNoteComponent::eNone);
     }
 }
 void NoteGridComponent::mouseDrag (const MouseEvent& e)
 {
+    CHECK_EDIT
     if (!selectorBox.isVisible()) {
         selectorBox.setVisible(true);
         selectorBox.toFront(false);
@@ -271,6 +275,7 @@ void NoteGridComponent::mouseDrag (const MouseEvent& e)
 }
 void NoteGridComponent::mouseUp (const MouseEvent&)
 {
+    CHECK_EDIT
     if (selectorBox.isVisible()) {
         
         
@@ -292,6 +297,7 @@ void NoteGridComponent::mouseUp (const MouseEvent&)
 
 void NoteGridComponent::mouseDoubleClick (const MouseEvent& e)
 {
+    CHECK_EDIT
     const int xPos = (e.getMouseDownX() / ((float)pixelsPerBar)) * ticksPerTimeSignature;
     const int yIn = ((float)e.getMouseDownY() / noteCompHeight);
     const int note = 127 - yIn;
@@ -327,6 +333,9 @@ void NoteGridComponent::mouseDoubleClick (const MouseEvent& e)
 
 bool NoteGridComponent::keyPressed (const KeyPress& key, Component* originatingComponent)
 {
+    if (styleSheet.disableEditing) {
+        return true;
+    }
     if (key == KeyPress::backspaceKey) {
         //
         deleteAllSelected();
@@ -462,4 +471,13 @@ void NoteGridComponent::loadSequence (PRESequence sq)
     }
     resized();
     repaint();
+}
+
+float NoteGridComponent::getNoteCompHeight ()
+{
+    return noteCompHeight;
+}
+float NoteGridComponent::getPixelsPerBar ()
+{
+    return pixelsPerBar;
 }

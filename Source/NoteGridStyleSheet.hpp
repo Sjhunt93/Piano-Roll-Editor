@@ -20,6 +20,8 @@ public:
     bool getDrawMIDINoteStr ();
     bool getDrawVelocity ();
     
+    bool disableEditing;
+    
 private:
     bool drawMIDINum, drawMIDINoteStr, drawVelocity;
     

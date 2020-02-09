@@ -7,6 +7,7 @@
 
 #include "PNoteComponent.hpp"
 
+#define CHECK_EDIT if(styleSheet.disableEditing) { return; }
 
 PNoteComponent::PNoteComponent (NoteGridStyleSheet & ss) : styleSheet(ss), edgeResizer(this, nullptr, ResizableEdgeComponent::Edge::rightEdge)
 {
@@ -16,6 +17,8 @@ PNoteComponent::PNoteComponent (NoteGridStyleSheet & ss) : styleSheet(ss), edgeR
     startWidth = startX = startY = -1;
     coordiantesDiffer = false;
     isMultiDrag = false;
+    state = eNone;
+    
     
 }
 PNoteComponent::~PNoteComponent ()
@@ -102,11 +105,13 @@ PNoteComponent::eState PNoteComponent::getState ()
 
 void PNoteComponent::mouseEnter (const MouseEvent&)
 {
+    CHECK_EDIT
     mouseOver = true;
     repaint();
 }
 void PNoteComponent::mouseExit  (const MouseEvent&)
 {
+    CHECK_EDIT
     mouseOver = false;
     setMouseCursor(MouseCursor::NormalCursor);
     repaint();
@@ -114,6 +119,7 @@ void PNoteComponent::mouseExit  (const MouseEvent&)
 }
 void PNoteComponent::mouseDown  (const MouseEvent& e)
 {
+    CHECK_EDIT
 //    startX = getX();
 //    startY = getY();
     if (e.mods.isShiftDown()) {
@@ -137,6 +143,7 @@ void PNoteComponent::mouseDown  (const MouseEvent& e)
 }
 void PNoteComponent::mouseUp    (const MouseEvent& e)
 {
+    CHECK_EDIT
     if (onPositionMoved != nullptr) {
         onPositionMoved(this);
     }
@@ -154,6 +161,7 @@ void PNoteComponent::mouseUp    (const MouseEvent& e)
 }
 void PNoteComponent::mouseDrag  (const MouseEvent& e)
 {
+    CHECK_EDIT
     //velocityEnabled
     if (resizeEnabled) {
         if (onLegnthChange != nullptr) {
@@ -187,6 +195,7 @@ void PNoteComponent::mouseDrag  (const MouseEvent& e)
 }
 void PNoteComponent::mouseMove  (const MouseEvent& e)
 {
+    CHECK_EDIT
     if (getWidth() - e.getMouseDownX() < 10) {
         setMouseCursor(MouseCursor::RightEdgeResizeCursor);
     }

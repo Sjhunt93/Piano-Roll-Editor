@@ -12,6 +12,7 @@ NoteGridStyleSheet::NoteGridStyleSheet ()
     drawMIDINum = false;
     drawMIDINoteStr = false;
     drawVelocity = true;
+    disableEditing = false;
 }
 
 bool NoteGridStyleSheet::getDrawMIDINum ()

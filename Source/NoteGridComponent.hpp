@@ -51,7 +51,7 @@ public:
     void mouseUp    (const MouseEvent&);
     void mouseDoubleClick (const MouseEvent&);
     
-    void setupGrid (float pixelsPerBar, float compHeight);
+    void setupGrid (float pixelsPerBar, float compHeight, const int bars);
     void setQuantisation (const int val);
     
     
@@ -61,6 +61,9 @@ public:
     // From here you could convert this into MIDI or any other custom musical encoding.
     PRESequence getSequence ();
     void loadSequence (PRESequence sq);
+    
+    float getNoteCompHeight ();
+    float getPixelsPerBar ();
     
 private:
     NoteGridStyleSheet & styleSheet;

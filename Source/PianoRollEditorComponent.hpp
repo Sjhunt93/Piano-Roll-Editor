@@ -69,11 +69,14 @@ public:
     void showControlPannel (bool state);
     void setStyleSheet (NoteGridStyleSheet style);
     void setup (const int bars, const int pixelsPerBar, const int noteHeight);
+    void updateBars (const int newNumberOfBars);
     
     void loadSequence (PRESequence sequence);
     PRESequence getSequence ();
     
     void setScroll (double x, double y);
+    
+    void disableEditing (bool value);
 private:
     //==============================================================================
     // Your private member variables go here...
