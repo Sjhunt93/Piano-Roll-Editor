@@ -113,13 +113,33 @@ void NoteGridComponent::setQuantisation (const int val)
 void NoteGridComponent::noteCompSelected (PNoteComponent * nc, const MouseEvent& e)
 {
     CHECK_EDIT
+    
+    int dragMove = 0;
+    for (auto component : noteComps) {
+        if (component->isMultiDrag) {
+            dragMove++;
+        }
+    }
+    std::cout << "Drag: " << dragMove << "\n";
+    
     for (auto component : noteComps) {
         if (component == nc) {
             component->setState(PNoteComponent::eSelected);
             component->toFront(true);
         }
-        else if (component->getState() == PNoteComponent::eSelected && !e.mods.isShiftDown() && !nc->wasDragging ) {
+        /*
+         This complicated if statement exists because if the user is dragging multiple notes around we don't want to clear the selection.
+         We only want so switch the selected note when the user selects another note
+         */
+        
+        else if (component->getState() == PNoteComponent::eSelected && !e.mods.isShiftDown() && !dragMove) {
             component->setState(PNoteComponent::eNone);
+        }
+    }
+    // need to reset the multidrag
+    for (auto component : noteComps) {
+        if (component->isMultiDrag) {
+            component->isMultiDrag = false;
         }
     }
 }
@@ -199,15 +219,9 @@ void NoteGridComponent::noteCompDragging (PNoteComponent* original, const MouseE
             const int movedX = event.getDistanceFromDragStartX();// (event.getx - original->startX);
             const int movedY = event.getDistanceFromDragStartY(); //(original->getY() - original->startY);
             
-            if (!firstCall) {
-                firstCall = true;
-                jassert(n->startX == -1 && n->startY == -1);
-            }
             if (n->startY == -1) {
                 n->startX = n->getX();
                 n->startY = n->getY();
-                jassert(n->startX > 0 && n->startY > 0);
-                
             }
             
             
@@ -215,7 +229,15 @@ void NoteGridComponent::noteCompDragging (PNoteComponent* original, const MouseE
             /*
             std::cout << "Started at: " << n->startX << " - " << n->startY << "\n";
             std::cout << n->getBounds().toString() << "\n";*/
-            n->setTopLeftPosition(n->startX + movedX, n->startY + movedY);
+            const int newX = n->startX + movedX;
+            const int newY = n->startY + movedY;
+            const int xDif = abs(newX - n->startX);
+            const int yDif = abs(newY - n->startY);
+            if (xDif > 2 || yDif > 2) { //small amount of jitter.
+                n->setTopLeftPosition(newX, newY);
+                n->isMultiDrag   = true;
+            }
+            
             /*std::cout << "Moved: " << movedX << " : " << movedY << " -- " << n->getX() << " : " << n->getY() <<  "\n" ;
             std::cout << n->getBounds().toString() << "\n \n" ;
              */
@@ -341,12 +363,7 @@ bool NoteGridComponent::keyPressed (const KeyPress& key, Component* originatingC
         deleteAllSelected();
         return true;
     }
-    if (key == KeyPress::spaceKey) {
-        //
-        getSequence();
-        return true;
-    }
-    if (key == KeyPress::upKey || key == KeyPress::downKey) {
+    else if (key == KeyPress::upKey || key == KeyPress::downKey) {
         bool didMove = false;
         for (auto nComp : noteComps) {
             if (nComp->getState() == PNoteComponent::eSelected) {
@@ -366,7 +383,7 @@ bool NoteGridComponent::keyPressed (const KeyPress& key, Component* originatingC
         }
         
     }
-    if (key == KeyPress::leftKey || key == KeyPress::rightKey) {
+    else if (key == KeyPress::leftKey || key == KeyPress::rightKey) {
         bool didMove = false;
         const int nudgeAmount = currentQValue;
         for (auto nComp : noteComps) {

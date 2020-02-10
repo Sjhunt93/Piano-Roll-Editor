@@ -140,7 +140,7 @@ void PNoteComponent::mouseDown  (const MouseEvent& e)
     }
     else {
         startDraggingComponent(this, e);
-        wasDragging = true;
+        
     }
     if (!resizeEnabled) {
         
@@ -161,9 +161,8 @@ void PNoteComponent::mouseUp    (const MouseEvent& e)
     mouseOver = false;
     resizeEnabled = false;
     velocityEnabled = false;
-    isMultiDrag = false;
     repaint();
-    wasDragging = false;
+    isMultiDrag = false;
     
 }
 void PNoteComponent::mouseDrag  (const MouseEvent& e)

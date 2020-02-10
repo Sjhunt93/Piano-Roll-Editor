@@ -63,8 +63,6 @@ public:
     int startX, startY;
     bool coordiantesDiffer; //sometimes the size of this component gets changed externally (for example on multi-resizing) set this flag to be true and at some point the internal model will get updated also
     bool isMultiDrag;
-    MultiEditState mEditState;
-    bool wasDragging;
     
 private:
     NoteGridStyleSheet & styleSheet;
