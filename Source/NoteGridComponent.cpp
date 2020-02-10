@@ -235,7 +235,7 @@ void NoteGridComponent::noteCompDragging (PNoteComponent* original, const MouseE
             const int yDif = abs(newY - n->startY);
             if (xDif > 2 || yDif > 2) { //small amount of jitter.
                 n->setTopLeftPosition(newX, newY);
-                n->isMultiDrag   = true;
+                n->isMultiDrag  = true;
             }
             
             /*std::cout << "Moved: " << movedX << " : " << movedY << " -- " << n->getX() << " : " << n->getY() <<  "\n" ;
