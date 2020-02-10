@@ -19,6 +19,8 @@ PNoteComponent::PNoteComponent (NoteGridStyleSheet & ss) : styleSheet(ss), edgeR
     isMultiDrag = false;
     state = eNone;
     
+    setCustomColour(Colours::green);
+    
     
 }
 PNoteComponent::~PNoteComponent ()
@@ -34,7 +36,7 @@ void PNoteComponent::paint (Graphics & g)
     
     g.fillAll(Colours::darkgrey); //border...
     Colour cToUse;
-    if (useCustomColour) {
+    if (useCustomColour && model.flags) {
         cToUse = customColour;
     }
     else {
@@ -98,6 +100,10 @@ void PNoteComponent::setValues (NoteModel m)
 NoteModel PNoteComponent::getModel ()
 {
     return model;
+}
+NoteModel * PNoteComponent::getModelPtr ()
+{
+    return &model;
 }
 
 void PNoteComponent::setState (eState s)

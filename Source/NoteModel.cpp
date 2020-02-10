@@ -6,18 +6,28 @@
 //
 
 #include "NoteModel.hpp"
+#ifndef LIB_VERSION
+#include "StaticCounter.h"
+#endif
 
 NoteModel::NoteModel ()
 {
-    
+    note = 0;
+    velocity = 0;
+    startTime = 0;
+    noteLegnth = 0;
+    flags = 0;
+#ifndef LIB_VERSION
+    uniqueId = StaticCounter::count();
+#endif
 }
-NoteModel::NoteModel (u8 n, u8 v, st_int st, st_int nl)
+NoteModel::NoteModel (u8 n, u8 v, st_int st, st_int nl, int f)
 {
     note = n;
     velocity = v;
     startTime = st;
     noteLegnth = nl;
-    
+    flags = f;  
 }
 NoteModel::NoteModel (const NoteModel & other)
 {
@@ -25,6 +35,10 @@ NoteModel::NoteModel (const NoteModel & other)
     velocity = other.velocity;
     startTime = other.startTime;
     noteLegnth = other.noteLegnth;
+    flags = other.flags;
+#ifndef LIB_VERSION
+    uniqueId = other.uniqueId;
+#endif
 }
 
 

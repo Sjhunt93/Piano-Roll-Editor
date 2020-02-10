@@ -235,7 +235,7 @@ void NoteGridComponent::noteCompDragging (PNoteComponent* original, const MouseE
             const int yDif = abs(newY - n->startY);
             if (xDif > 2 || yDif > 2) { //small amount of jitter.
                 n->setTopLeftPosition(newX, newY);
-                n->isMultiDrag  = true;
+                n->isMultiDrag = true;
             }
             
             /*std::cout << "Moved: " << movedX << " : " << movedY << " -- " << n->getX() << " : " << n->getY() <<  "\n" ;
@@ -340,7 +340,7 @@ void NoteGridComponent::mouseDoubleClick (const MouseEvent& e)
         this->noteCompDragging(n, e);
     };
     addAndMakeVisible(nn);
-    NoteModel nModel((u8)note, (u8) ((arc4random() % 60) + 60), (st_int)xPos, lastNoteLength);
+    NoteModel nModel((u8)note, (u8) ((arc4random() % 60) + 60), (st_int)xPos, lastNoteLength, 0);
     nModel.quantiseModel(currentQValue, true, true);
     nn->setValues(nModel);
     
@@ -497,4 +497,14 @@ float NoteGridComponent::getNoteCompHeight ()
 float NoteGridComponent::getPixelsPerBar ()
 {
     return pixelsPerBar;
+}
+std::vector<NoteModel *> NoteGridComponent::getSelectedModels ()
+{
+    std::vector<NoteModel *> noteModels;
+    for (auto comp : noteComps) {
+        if (comp->getState()) {
+           noteModels.push_back(comp->getModelPtr());
+        }
+    }
+    return noteModels;
 }

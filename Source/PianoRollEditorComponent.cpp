@@ -138,3 +138,15 @@ NoteGridControlPanel & PianoRollEditorComponent::getControlPannel ()
 {
     return noteGridPanel;
 }
+
+PianoRollEditorComponent::ExternalModelEditor PianoRollEditorComponent::getSelectedNoteModels ()
+{
+    ExternalModelEditor mEdit;
+    mEdit.update = [this]()
+    {
+        noteGrid.resized();
+        noteGrid.repaint();
+    };
+    mEdit.models = noteGrid.getSelectedModels();
+    return mEdit;
+}

@@ -58,6 +58,12 @@ public:
 class PianoRollEditorComponent   : public Component
 {
 public:
+    
+    struct ExternalModelEditor {
+        std::vector<NoteModel *> models; //const event pointers but mutable elements
+        std::function<void()> update; //once you have made the edits then call this
+    };
+    
     //==============================================================================
     PianoRollEditorComponent();
     ~PianoRollEditorComponent();
@@ -78,6 +84,8 @@ public:
     
     void disableEditing (bool value);
     NoteGridControlPanel & getControlPannel ();
+    
+     ExternalModelEditor getSelectedNoteModels ();
 private:
     //==============================================================================
     // Your private member variables go here...

@@ -38,6 +38,7 @@ public:
     
     void setValues (NoteModel model);
     NoteModel getModel ();
+    NoteModel * getModelPtr ();
     
     void setState (eState state);
     eState getState ();

@@ -16,7 +16,7 @@ class NoteModel {
 public:
     
     NoteModel ();
-    NoteModel (u8 n, u8 v, st_int st, st_int nl);
+    NoteModel (u8 n, u8 v, st_int st, st_int nl, int flags);
     NoteModel (const NoteModel & other);
     
     
@@ -26,6 +26,10 @@ public:
     u8 velocity;
     st_int startTime;
     st_int noteLegnth;
+    unsigned int flags; //the first 8 bits are for custom colours that you might want to map.
+#ifndef LIB_VERSION
+    int64_t        uniqueId;
+#endif
 };
 
 class PRESequence { //Piano Roll Editor Sequence
