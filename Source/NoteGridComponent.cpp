@@ -345,7 +345,7 @@ void NoteGridComponent::mouseDoubleClick (const MouseEvent& e)
         this->noteCompDragging(n, e);
     };
     addAndMakeVisible(nn);
-    NoteModel nModel((u8)note, (u8) ((arc4random() % 60) + 60), (st_int)xPos, lastNoteLength, 0);
+    NoteModel nModel((u8)note, 100, (st_int)xPos, lastNoteLength, {});
     nModel.quantiseModel(currentQValue, true, true);
     nn->setValues(nModel);
     
@@ -453,8 +453,8 @@ PRESequence NoteGridComponent::getSequence ()
     while (leftToSort) {
         const int index = findLowest();
         auto m = componentsCopy[index]->getModel();
-        m.flags = componentsCopy[index]->getState();
-        seq.events.push_back(componentsCopy[index]->getModel());
+        m.flags.state = componentsCopy[index]->getState();
+        seq.events.push_back(m);
 //        seq.events[seq.events.size()-1]->flags =1  //we also want the selected flags..
         
         componentsCopy[index] = nullptr;

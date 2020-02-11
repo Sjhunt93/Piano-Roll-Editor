@@ -16,18 +16,20 @@ NoteModel::NoteModel ()
     velocity = 0;
     startTime = 0;
     noteLegnth = 0;
-    flags = 0;
 #ifndef LIB_VERSION
     uniqueId = StaticCounter::count();
 #endif
 }
-NoteModel::NoteModel (u8 n, u8 v, st_int st, st_int nl, int f)
+NoteModel::NoteModel (u8 n, u8 v, st_int st, st_int nl, Flags f)
 {
     note = n;
     velocity = v;
     startTime = st;
     noteLegnth = nl;
-    flags = f;  
+    flags = f;
+#ifndef LIB_VERSION
+    uniqueId = StaticCounter::count();
+#endif
 }
 NoteModel::NoteModel (const NoteModel & other)
 {
@@ -79,7 +81,8 @@ bool NoteModel::compare (const NoteModel & other, bool compareUIDs)
     RETURN_IF(velocity != other.velocity)
     RETURN_IF(startTime != other.startTime)
     RETURN_IF(noteLegnth != other.noteLegnth)
-    RETURN_IF(flags != other.flags)
+    RETURN_IF(flags.state != other.flags.state)
+    RETURN_IF(flags.isGenerative != other.flags.isGenerative)
     if (compareUIDs) {
         RETURN_IF(uniqueId != other.uniqueId)
     }

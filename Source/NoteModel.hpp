@@ -15,8 +15,19 @@
 class NoteModel {
 public:
     
+    struct Flags {
+        Flags ()
+        {
+            state = 0;
+            isGenerative = 0;
+        }
+        unsigned int state : 2;
+        unsigned int isGenerative : 2;
+        
+    };
+    
     NoteModel ();
-    NoteModel (u8 n, u8 v, st_int st, st_int nl, int flags);
+    NoteModel (u8 n, u8 v, st_int st, st_int nl, Flags flags);
     NoteModel (const NoteModel & other);
     
     
@@ -28,7 +39,7 @@ public:
     u8 velocity;
     st_int startTime;
     st_int noteLegnth;
-    unsigned int flags; //the first 8 bits are for custom colours that you might want to map.
+    Flags flags; //the first 8 bits are for custom colours that you might want to map.
 #ifndef LIB_VERSION
     int64_t        uniqueId;
 #endif

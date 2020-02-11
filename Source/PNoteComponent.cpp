@@ -36,7 +36,7 @@ void PNoteComponent::paint (Graphics & g)
     
     g.fillAll(Colours::darkgrey); //border...
     Colour cToUse;
-    if (useCustomColour && model.flags) {
+    if (useCustomColour && model.flags.isGenerative) {
         cToUse = customColour;
     }
     else {
