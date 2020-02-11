@@ -22,6 +22,8 @@ public:
     
     void quantiseModel (int qValue, bool qStartTime, bool qNoteLegnth);
     
+    bool compare (const NoteModel & other, bool compareUIDs = true);
+    
     u8 note;
     u8 velocity;
     st_int startTime;

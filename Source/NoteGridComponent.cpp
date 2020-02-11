@@ -142,6 +142,7 @@ void NoteGridComponent::noteCompSelected (PNoteComponent * nc, const MouseEvent&
             component->isMultiDrag = false;
         }
     }
+    sendEdit();
 }
 void NoteGridComponent::noteCompPositionMoved (PNoteComponent * comp, bool callResize)
 {
@@ -188,6 +189,7 @@ void NoteGridComponent::noteCompPositionMoved (PNoteComponent * comp, bool callR
     if (callResize) {
         resized();
     }
+    sendEdit();
 }
 
 void NoteGridComponent::noteCompLengthChanged (PNoteComponent * original, int diff)
@@ -208,6 +210,7 @@ void NoteGridComponent::noteCompLengthChanged (PNoteComponent * original, int di
             
         }
     }
+    sendEdit();
 }
 
 void NoteGridComponent::noteCompDragging (PNoteComponent* original, const MouseEvent& event)
@@ -262,6 +265,7 @@ void NoteGridComponent::mouseDown (const MouseEvent&)
     for (PNoteComponent * component : noteComps) {
         component->setState(PNoteComponent::eNone);
     }
+    sendEdit();
 }
 void NoteGridComponent::mouseDrag (const MouseEvent& e)
 {
@@ -314,6 +318,7 @@ void NoteGridComponent::mouseUp (const MouseEvent&)
         selectorBox.setSize(1,1);
     }
     
+    sendEdit();
     
 }
 
@@ -349,6 +354,7 @@ void NoteGridComponent::mouseDoubleClick (const MouseEvent& e)
     
     resized();
     repaint();
+    sendEdit();
 }
 
 
@@ -361,6 +367,7 @@ bool NoteGridComponent::keyPressed (const KeyPress& key, Component* originatingC
     if (key == KeyPress::backspaceKey) {
         //
         deleteAllSelected();
+        sendEdit();
         return true;
     }
     else if (key == KeyPress::upKey || key == KeyPress::downKey) {
@@ -377,6 +384,7 @@ bool NoteGridComponent::keyPressed (const KeyPress& key, Component* originatingC
             }
         }
         if (didMove) {
+            sendEdit();
             resized();
             return true;
             
@@ -398,9 +406,9 @@ bool NoteGridComponent::keyPressed (const KeyPress& key, Component* originatingC
             }
         }
         if (didMove) {
+            sendEdit();
             resized();
             return true;
-            
         }
         
     }
@@ -444,7 +452,11 @@ PRESequence NoteGridComponent::getSequence ()
     PRESequence seq;
     while (leftToSort) {
         const int index = findLowest();
+        auto m = componentsCopy[index]->getModel();
+        m.flags = componentsCopy[index]->getState();
         seq.events.push_back(componentsCopy[index]->getModel());
+//        seq.events[seq.events.size()-1]->flags =1  //we also want the selected flags..
+        
         componentsCopy[index] = nullptr;
         componentsCopy.erase(componentsCopy.begin() + index);
         leftToSort--;
@@ -507,4 +519,11 @@ std::vector<NoteModel *> NoteGridComponent::getSelectedModels ()
         }
     }
     return noteModels;
+}
+
+void NoteGridComponent::sendEdit ()
+{
+    if (this->onEdit != nullptr) {
+        this->onEdit();
+    }
 }

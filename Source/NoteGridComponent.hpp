@@ -66,7 +66,12 @@ public:
     float getPixelsPerBar ();
     
     std::vector<NoteModel *> getSelectedModels ();
+    
+    std::function<void()> onEdit;
 private:
+    
+    void sendEdit ();
+    
     NoteGridStyleSheet & styleSheet;
     std::vector<PNoteComponent *> noteComps;
     float noteCompHeight;

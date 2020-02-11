@@ -40,6 +40,12 @@ PianoRollEditorComponent::PianoRollEditorComponent() : noteGrid(styleSheet), not
         setup(10, pixelsPerBar, noteHeight);
     };
     
+    noteGrid.onEdit = [this]() //pass up the chain.
+    {
+        if (this->onEdit != nullptr) {
+            this->onEdit();
+        }
+    };
     
 //    setup(10, <#const int pixelsPerBar#>, <#const int noteHeight#>)
     

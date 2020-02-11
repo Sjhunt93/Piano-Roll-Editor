@@ -71,9 +71,25 @@ void NoteModel::quantiseModel (int qValue, bool qStartTime, bool qNoteLegnth)
     
 }
 
+bool NoteModel::compare (const NoteModel & other, bool compareUIDs)
+{
+#define RETURN_IF(A) if(A){return false;}
+    
+    RETURN_IF(note != other.note)
+    RETURN_IF(velocity != other.velocity)
+    RETURN_IF(startTime != other.startTime)
+    RETURN_IF(noteLegnth != other.noteLegnth)
+    RETURN_IF(flags != other.flags)
+    if (compareUIDs) {
+        RETURN_IF(uniqueId != other.uniqueId)
+    }
+    return true;
+}
+
 void PRESequence::print ()
 {
     for (auto nm : events) {
         std::cout << (int) nm.note << " - " << (int) nm.velocity << " : " << nm.startTime << " - " << nm.noteLegnth << "\n";
     }
 }
+

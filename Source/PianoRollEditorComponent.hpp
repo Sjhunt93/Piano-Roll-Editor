@@ -85,7 +85,9 @@ public:
     void disableEditing (bool value);
     NoteGridControlPanel & getControlPannel ();
     
-     ExternalModelEditor getSelectedNoteModels ();
+    ExternalModelEditor getSelectedNoteModels ();
+    
+    std::function<void()> onEdit;
 private:
     //==============================================================================
     // Your private member variables go here...
