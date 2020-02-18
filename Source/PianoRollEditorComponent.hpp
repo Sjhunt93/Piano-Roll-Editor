@@ -24,7 +24,6 @@ class CustomViewport : public Viewport
 public:
     void visibleAreaChanged (const Rectangle<int>& newVisibleArea)
     {
-        std::cout << "Area scrolled: " << getViewPositionX() << " - " << getViewPositionY() << "\n";
         Viewport::visibleAreaChanged(newVisibleArea);
         if (positionMoved) {
             positionMoved(getViewPositionX(), getViewPositionY());
