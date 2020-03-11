@@ -8,6 +8,10 @@
 #include "NoteGridComponent.hpp"
 #include <array>
 
+#ifndef LIB_VERSION
+#include "DataLoggerRoot.h"
+#endif
+
 
 #define CHECK_EDIT if(styleSheet.disableEditing) { return; }
 
@@ -376,6 +380,13 @@ void NoteGridComponent::mouseDoubleClick (const MouseEvent& e)
 
 bool NoteGridComponent::keyPressed (const KeyPress& key, Component* originatingComponent)
 {
+    
+#ifndef LIB_VERSION
+    LOG_KEY_PRESS(key.getKeyCode(), 1, key.getModifiers().getRawFlags());
+#endif
+    
+
+    
     if (styleSheet.disableEditing) {
         return true;
     }
