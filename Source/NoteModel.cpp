@@ -8,6 +8,7 @@
 #include "NoteModel.hpp"
 #ifndef LIB_VERSION
 #include "StaticCounter.h"
+#include "DataLoggerRoot.h"
 #endif
 
 NoteModel::NoteModel ()
@@ -30,6 +31,7 @@ NoteModel::NoteModel (u8 n, u8 v, st_int st, st_int nl, Flags f)
 #ifndef LIB_VERSION
     uniqueId = StaticCounter::count();
 #endif
+//    LOG_NOTE_ADDED(<#A#>, <#B#>, <#C#>)
 }
 NoteModel::NoteModel (const NoteModel & other)
 {
@@ -41,6 +43,7 @@ NoteModel::NoteModel (const NoteModel & other)
 #ifndef LIB_VERSION
     uniqueId = other.uniqueId;
 #endif
+    sendChange = other.sendChange;
 }
 
 
@@ -89,10 +92,48 @@ bool NoteModel::compare (const NoteModel & other, bool compareUIDs)
     return true;
 }
 
+
+void NoteModel::setNote (u8 _note)
+{
+    note = _note;
+    trigger();
+#ifndef LIB_VERSION
+    LOG_NOTE_EDITED_PR(note, velocity, startTime, noteLegnth);
+#endif
+}
+void NoteModel::setVelocity (u8 _velocity)
+{
+    velocity = _velocity;
+    trigger();
+#ifndef LIB_VERSION
+    LOG_NOTE_EDITED_PR(note, velocity, startTime, noteLegnth);
+#endif
+}
+void NoteModel::setStartTime (st_int _time)
+{
+    startTime = _time;
+}
+void NoteModel::setNoteLegnth (st_int _len)
+{
+    noteLegnth = _len;
+}
+
+void NoteModel::trigger()
+{
+    if (sendChange != nullptr) {
+        sendChange(note, velocity);
+    }
+}
+void NoteModel::trigger(const u8 n, const u8 vel)
+{
+    if (sendChange != nullptr) {
+        sendChange(n, vel);
+    }
+}
 void PRESequence::print ()
 {
     for (auto nm : events) {
-        std::cout << (int) nm.note << " - " << (int) nm.velocity << " : " << nm.startTime << " - " << nm.noteLegnth << "\n";
+        std::cout << (int) nm.getNote() << " - " << (int) nm.getVelocity() << " : " << nm.getStartTime() << " - " << nm.getNoteLegnth() << "\n";
     }
 }
 

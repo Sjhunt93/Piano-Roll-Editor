@@ -35,14 +35,31 @@ public:
     
     bool compare (const NoteModel & other, bool compareUIDs = true);
     
+    
+    void setNote (u8 _note);
+    void setVelocity (u8 _velocity);
+    void setStartTime (st_int _time);
+    void setNoteLegnth (st_int _len);
+    
+    u8 getNote () {return note;}
+    u8 getVelocity () {return velocity;}
+    st_int getStartTime () {return startTime;}
+    st_int getNoteLegnth () {return noteLegnth;}
+    
+    
+    Flags flags; //the first 8 bits are for custom colours that you might want to map.
+    
+    std::function<void(int note,int velocity)> sendChange;
+    void trigger();
+    void trigger(const u8 note, const u8 vel);
+#ifndef LIB_VERSION
+    int64_t        uniqueId;
+#endif
+private:
     u8 note;
     u8 velocity;
     st_int startTime;
     st_int noteLegnth;
-    Flags flags; //the first 8 bits are for custom colours that you might want to map.
-#ifndef LIB_VERSION
-    int64_t        uniqueId;
-#endif
 };
 
 class PRESequence { //Piano Roll Editor Sequence

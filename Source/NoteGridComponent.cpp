@@ -82,11 +82,11 @@ void NoteGridComponent::resized ()
         if (component->coordiantesDiffer) {
             noteCompPositionMoved(component, false);
         }
-        const float xPos = (component->getModel().startTime / ((float) ticksPerTimeSignature)) * pixelsPerBar;
+        const float xPos = (component->getModel().getStartTime() / ((float) ticksPerTimeSignature)) * pixelsPerBar;
 
 
-        const float yPos = (getHeight() - (component->getModel().note * noteCompHeight)) - noteCompHeight;
-        float len = (component->getModel().noteLegnth / ((float) ticksPerTimeSignature)) * pixelsPerBar;
+        const float yPos = (getHeight() - (component->getModel().getNote() * noteCompHeight)) - noteCompHeight;
+        float len = (component->getModel().getNoteLegnth() / ((float) ticksPerTimeSignature)) * pixelsPerBar;
         
         component->setBounds(xPos, yPos, len, noteCompHeight);
     }
@@ -176,12 +176,12 @@ void NoteGridComponent::noteCompPositionMoved (PNoteComponent * comp, bool callR
     
     const int len = (comp->getWidth() / ((float)pixelsPerBar)) * ticksPerTimeSignature;
     NoteModel nm = comp->getModel();
-    nm.note = note;
-    nm.startTime = xPos;
-    nm.noteLegnth = len;
+    nm.setNote(note);
+    nm.setStartTime(xPos);
+    nm.setNoteLegnth(len);
     nm.quantiseModel(currentQValue, true, true);
-    
-    lastNoteLength = nm.noteLegnth;
+    nm.sendChange = sendChange;
+    lastNoteLength = nm.getNoteLegnth();
     
     comp->startY = -1;
     comp->startX = -1;
@@ -253,6 +253,19 @@ void NoteGridComponent::noteCompDragging (PNoteComponent* original, const MouseE
         }
 
     }
+    
+
+    /*
+     This enables the notes to be triggered while dragging.
+     */
+    int note = 127 - (original->getY() / noteCompHeight);
+    if (note > 127) { note = 127; }
+    else if (note < 0) { note = 0; }
+    if (note != lastTrigger) {
+        original->getModel().trigger(note, 100);
+        lastTrigger = note;
+    }
+    
 }
 void NoteGridComponent::setPositions ()
 {
@@ -347,6 +360,8 @@ void NoteGridComponent::mouseDoubleClick (const MouseEvent& e)
     addAndMakeVisible(nn);
     NoteModel nModel((u8)note, 100, (st_int)xPos, lastNoteLength, {});
     nModel.quantiseModel(currentQValue, true, true);
+    nModel.sendChange = sendChange;
+    nModel.trigger();
     nn->setValues(nModel);
     
 
@@ -376,9 +391,10 @@ bool NoteGridComponent::keyPressed (const KeyPress& key, Component* originatingC
             if (nComp->getState() == PNoteComponent::eSelected) {
                 NoteModel nModel =  nComp->getModel();
                 (key == KeyPress::upKey) ?
-                nModel.note++ :
-                nModel.note--;
+                nModel.setNote(nModel.getNote() + 1) :
+                nModel.setNote(nModel.getNote() - 1);
                 
+                nModel.sendChange = sendChange;
                 nComp->setValues(nModel);
                 didMove = true;
             }
@@ -398,9 +414,10 @@ bool NoteGridComponent::keyPressed (const KeyPress& key, Component* originatingC
             if (nComp->getState() == PNoteComponent::eSelected) {
                 NoteModel nModel =  nComp->getModel();
                 (key == KeyPress::rightKey) ?
-                nModel.startTime += nudgeAmount:
-                nModel.startTime -= nudgeAmount;
+                nModel.setStartTime(nModel.getStartTime() + nudgeAmount) :
+                nModel.setStartTime(nModel.getStartTime() - nudgeAmount) ;
                 
+                nModel.sendChange = sendChange;
                 nComp->setValues(nModel);
                 didMove = true;
             }
@@ -441,7 +458,7 @@ PRESequence NoteGridComponent::getSequence ()
     auto findLowest = [&]() -> int {
         int lowestIndex = 0;
         for (int i = 0; i < componentsCopy.size(); i++) {
-            if (componentsCopy[i]->getModel().startTime < componentsCopy[lowestIndex]->getModel().startTime) {
+            if (componentsCopy[i]->getModel().getStartTime() < componentsCopy[lowestIndex]->getModel().getStartTime()) {
                 lowestIndex = i;
             }
         }
@@ -492,6 +509,7 @@ void NoteGridComponent::loadSequence (PRESequence sq)
         };
         addAndMakeVisible(nn);
         NoteModel nModel(event);
+        nModel.sendChange = sendChange;
 //        nModel.quantiseModel(PRE::defaultResolution / 8, true, true);
         nn->setValues(nModel);
         

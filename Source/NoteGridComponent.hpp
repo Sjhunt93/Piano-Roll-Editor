@@ -67,6 +67,7 @@ public:
     
     std::vector<NoteModel *> getSelectedModels ();
     
+    std::function<void(int note,int velocity)> sendChange;
     std::function<void()> onEdit;
 private:
     
@@ -85,5 +86,6 @@ private:
     st_int lastNoteLength;
     bool    firstDrag;
     bool firstCall = false;
+    int lastTrigger = -1;
 };
 #endif /* NoteGridComponent_hpp */

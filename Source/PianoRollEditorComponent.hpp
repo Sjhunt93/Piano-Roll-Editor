@@ -87,6 +87,8 @@ public:
     ExternalModelEditor getSelectedNoteModels ();
     
     std::function<void()> onEdit;
+    std::function<void(int note,int velocity)> sendChange;
+
 private:
     //==============================================================================
     // Your private member variables go here...

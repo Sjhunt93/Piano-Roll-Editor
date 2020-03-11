@@ -61,14 +61,14 @@ void PNoteComponent::paint (Graphics & g)
         g.setColour(cToUse.brighter());
         const int lineMax = getWidth() - 5;
         
-        g.drawLine(5, getHeight() * 0.5 - 2, lineMax * (model.velocity/127.0), getHeight() * 0.5 - 2, 4);
+        g.drawLine(5, getHeight() * 0.5 - 2, lineMax * (model.getVelocity()/127.0), getHeight() * 0.5 - 2, 4);
     }
     String toDraw;
     if (styleSheet.getDrawMIDINoteStr()) {
-        toDraw += String(PRE::pitches_names[model.note%12]) + String(model.note/12) + String(" ");
+        toDraw += String(PRE::pitches_names[model.getNote()%12]) + String(model.getNote()/12) + String(" ");
     }
     if (styleSheet.getDrawMIDINum()) {
-        toDraw += String(model.note);
+        toDraw += String(model.getNote());
     }
     
     g.setColour(Colours::white);
@@ -88,11 +88,10 @@ void PNoteComponent::setCustomColour (Colour c)
 void PNoteComponent::setValues (NoteModel m)
 {
     
+    if (m.getNote() == 255) { m.setNote(0); } //unsigned overflow
+    if (m.getNote() > 127) { m.setNote(127); }
     
-    if (m.note == 255) { m.note = 0; } //unsigned overflow
-    if (m.note > 127) { m.note = 127; }
-    
-    if (((int)m.startTime) < 0) { m.startTime = 0; } //cast to int as noteLen is unsigned. allows us to check for 0
+    if (((int)m.getStartTime()) < 0) { m.setStartTime(0); } //cast to int as noteLen is unsigned. allows us to check for 0
     model = m;
     repaint();
 
@@ -137,7 +136,7 @@ void PNoteComponent::mouseDown  (const MouseEvent& e)
 //    startY = getY();
     if (e.mods.isShiftDown()) {
         velocityEnabled = true;
-        startVelocity = model.velocity;
+        startVelocity = model.getVelocity();
     }
     else if (getWidth() - e.getMouseDownX() < 10) {
         resizeEnabled = true;
@@ -190,7 +189,7 @@ void PNoteComponent::mouseDrag  (const MouseEvent& e)
         else if (newVelocity > 127) {
             newVelocity = 127;
         }
-        model.velocity = newVelocity;
+        model.setVelocity(newVelocity);
         repaint();
 //        std::cout << velocityDiff << "\n";
         
