@@ -12,7 +12,7 @@
 /*
  This flag is set to disable some of the custom features the piano roll editor is used for in the IGME application.
  */
-#undef LIB_VERSION
+#define LIB_VERSION
 
 #ifndef u8
 typedef unsigned char u8;

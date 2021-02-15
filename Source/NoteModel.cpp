@@ -86,9 +86,12 @@ bool NoteModel::compare (const NoteModel & other, bool compareUIDs)
     RETURN_IF(noteLegnth != other.noteLegnth)
     RETURN_IF(flags.state != other.flags.state)
     RETURN_IF(flags.isGenerative != other.flags.isGenerative)
+    
+#ifndef LIB_VERSION
     if (compareUIDs) {
         RETURN_IF(uniqueId != other.uniqueId)
     }
+#endif
     return true;
 }
 
