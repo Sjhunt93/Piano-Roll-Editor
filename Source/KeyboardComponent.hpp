@@ -8,14 +8,14 @@
 #ifndef KeyboardComponent_hpp
 #define KeyboardComponent_hpp
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "PConstants.h"
 
 class KeyboardComponent : public Component {
 public:
     
     KeyboardComponent ();
     void paint (Graphics & g);
-    void resized ();
+    
 private:
     Array<int> blackPitches;
 

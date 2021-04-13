@@ -9,9 +9,14 @@
 #define PConstants_h
 
 
-/*
- This flag is set to disable some of the custom features the piano roll editor is used for in the IGME application.
- */
+/* --------------------------------------------------------------------------------------------------------------------
+ This flag is set to disable some of the custom features the piano roll editor is used for in the IGME application for which this code is taken from.
+ 
+ Ensure that the flag LIB_VERSION is enabled this removes some of the IGME specific code, of course you can also delete that manually if needed
+-------------------------------------------------------------------------------------------------------------------- */
+
+#include <JuceHeader.h>
+using namespace juce;
 #define LIB_VERSION
 
 #ifndef u8
@@ -21,7 +26,11 @@ typedef unsigned char u8;
 typedef unsigned int st_int;
 #endif
 
-namespace PRE {
+namespace PRE { // Piano Roll Editor namespace
+/*
+ Although this could easily be updated 480 works nicely for MIDI timing and is common in MIDI file formats.
+ 480/16 = 30 hemidemisemiquaver 1/64
+ */
 static const int defaultResolution = 480; // per quarter note
 
 static const char * pitches_names[] = {

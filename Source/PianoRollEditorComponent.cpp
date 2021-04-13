@@ -9,33 +9,36 @@
 
 
 //==============================================================================
-PianoRollEditorComponent::PianoRollEditorComponent() : noteGrid(styleSheet), noteGridPanel(noteGrid, styleSheet)
+PianoRollEditorComponent::PianoRollEditorComponent() : noteGrid(styleSheet), controlPannel(noteGrid, styleSheet)
 {
  
-    
+    //--- grid
     addAndMakeVisible(viewportGrid);
  
     viewportGrid.setViewedComponent(&noteGrid, false);
     viewportGrid.setScrollBarsShown(true, true);
     viewportGrid.setScrollBarThickness(10);
  
-    addAndMakeVisible(noteGridPanel);
     
+    //--- timeline
     viewportTimeline.setViewedComponent(&timelineComp, false);
     viewportTimeline.setScrollBarsShown(false, false);
     addAndMakeVisible(viewportTimeline);
     
+    //--- keyboard
     viewportPiano.setViewedComponent(&keyboardComp, false);
     viewportPiano.setScrollBarsShown(false, false);
     addAndMakeVisible(viewportPiano);
     
+    //once the piano roll component is scrolled then it updates the others manually
     viewportGrid.positionMoved = [this](int x, int y)
     {
         viewportTimeline.setViewPosition(x, y);
         viewportPiano.setViewPosition(x, y);
     };
     
-    noteGridPanel.configureGrid = [this](int pixelsPerBar, int noteHeight)
+    addAndMakeVisible(controlPannel);
+    controlPannel.configureGrid = [this](int pixelsPerBar, int noteHeight)
     {
         setup(10, pixelsPerBar, noteHeight);
     };
@@ -52,22 +55,6 @@ PianoRollEditorComponent::PianoRollEditorComponent() : noteGrid(styleSheet), not
             this->sendChange(note, vel);
         }
     };
-    
-//    setup(10, <#const int pixelsPerBar#>, <#const int noteHeight#>)
-    
-#if 0 //some test code for setting the notes on the grid
-    
-    Sequence seq;
-    for (int i = 0; i < 16; i++) {
-        NoteModel nm;
-        nm.note = arc4random() % 24 + 48;
-        nm.velocity = arc4random() % 50 + 55;
-        nm.startTime = i * 240;
-        nm.noteLegnth = 480;
-        seq.events.push_back(nm);
-    }
-    noteGrid.loadSequence(seq);
-#endif
 }
 
 PianoRollEditorComponent::~PianoRollEditorComponent()
@@ -78,13 +65,12 @@ PianoRollEditorComponent::~PianoRollEditorComponent()
 //==============================================================================
 void PianoRollEditorComponent::paint (Graphics& g)
 {
-//    g.fillAll(Colours::darkslateblue);
-       g.fillAll(Colours::darkgrey.darker());
+    g.fillAll(Colours::darkgrey.darker());
 }
 
 void PianoRollEditorComponent::resized()
 {
-    viewportGrid.setBounds(80, 50, getWidth()-90, noteGridPanel.isVisible() ? getHeight()-180 : getHeight() - 55);
+    viewportGrid.setBounds(80, 50, getWidth()-90, controlPannel.isVisible() ? getHeight()-180 : getHeight() - 55);
     viewportTimeline.setBounds(viewportGrid.getX(), 5, viewportGrid.getWidth()-10, viewportGrid.getY() - 5);
     viewportPiano.setBounds(5, viewportGrid.getY(), 70, viewportGrid.getHeight()- 10);
     
@@ -94,41 +80,57 @@ void PianoRollEditorComponent::resized()
     timelineComp.setup(10, 900);
     keyboardComp.setBounds(0, 0, viewportPiano.getWidth(), noteGrid.getHeight());
     
-    noteGridPanel.setBounds(5, viewportGrid.getBottom() + 5, getWidth() - 10, 140);
+    controlPannel.setBounds(5, viewportGrid.getBottom() + 5, getWidth() - 10, 140);
     
     
 }
 
 void PianoRollEditorComponent::showControlPannel (bool state)
 {
-    noteGridPanel.setVisible(state);
+    controlPannel.setVisible(state);
 }
-void PianoRollEditorComponent::setStyleSheet (NoteGridStyleSheet style)
-{
-    //
-}
+//void PianoRollEditorComponent::setStyleSheet (NoteGridStyleSheet style)
+//{
+//
+//}
 void PianoRollEditorComponent::setup (const int bars, const int pixelsPerBar, const int noteHeight)
 {
-    noteGrid.setupGrid(pixelsPerBar, noteHeight, bars);
-    timelineComp.setup(bars, pixelsPerBar);
-    keyboardComp.setSize(viewportPiano.getWidth(), noteGrid.getHeight()); //subtract 10 for the scroll bars
+    
+    if (bars > 1 && bars < 1000) { // sensible limits..
+
+        noteGrid.setupGrid(pixelsPerBar, noteHeight, bars);
+        timelineComp.setup(bars, pixelsPerBar);
+        keyboardComp.setSize(viewportPiano.getWidth(), noteGrid.getHeight());
+    }
+    else {
+        // you might be able to have a 1000 bars but do you really need too!?
+        jassertfalse;
+    }
 }
 
 void PianoRollEditorComponent::updateBars (const int newNumberOfBars)
 {
-    const float pPb = noteGrid.getPixelsPerBar();
-    const float nH = noteGrid.getNoteCompHeight();
-    noteGrid.setupGrid(pPb, nH, newNumberOfBars);
-    timelineComp.setup(newNumberOfBars, pPb);
-    keyboardComp.setSize(viewportPiano.getWidth(), noteGrid.getHeight());
-    
+    if (newNumberOfBars > 1 && newNumberOfBars < 1000) { // sensible limits..
+        const float pPb = noteGrid.getPixelsPerBar();
+        const float nH = noteGrid.getNoteCompHeight();
+        
+        noteGrid.setupGrid(pPb, nH, newNumberOfBars);
+        timelineComp.setup(newNumberOfBars, pPb);
+        keyboardComp.setSize(viewportPiano.getWidth(), noteGrid.getHeight());
+    }
+    else {
+        jassertfalse;
+    }
 }
 
 void PianoRollEditorComponent::loadSequence (PRESequence sequence)
 {
     noteGrid.loadSequence(sequence);
-    const int middleNote = ((sequence.highNote - sequence.lowNote) * 0.5) + sequence.lowNote;
-    const float scrollRatio = middleNote / 127.0;
+    
+    
+    // fix me, this automatically scrolls the grid
+//    const int middleNote = ((sequence.highNote - sequence.lowNote) * 0.5) + sequence.lowNote;
+//    const float scrollRatio = middleNote / 127.0;
 //    setScroll(0.0, scrollRatio);
 }
 PRESequence PianoRollEditorComponent::getSequence ()
@@ -148,7 +150,7 @@ void PianoRollEditorComponent::disableEditing (bool value)
 
 NoteGridControlPanel & PianoRollEditorComponent::getControlPannel ()
 {
-    return noteGridPanel;
+    return controlPannel;
 }
 
 PianoRollEditorComponent::ExternalModelEditor PianoRollEditorComponent::getSelectedNoteModels ()

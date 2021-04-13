@@ -9,7 +9,7 @@
 #define PNoteComponent_hpp
 
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "PConstants.h"
 #include "NoteModel.hpp"
 #include "NoteGridStyleSheet.hpp"
 
@@ -43,19 +43,18 @@ public:
     void setState (eState state);
     eState getState ();
     
-    void mouseEnter (const MouseEvent&);
-    void mouseExit  (const MouseEvent&);
-    void mouseDown  (const MouseEvent&);
-    void mouseUp    (const MouseEvent&);
-    void mouseDrag  (const MouseEvent&);
-    void mouseMove  (const MouseEvent&);
+    void mouseEnter (const MouseEvent&) override;
+    void mouseExit  (const MouseEvent&) override;
+    void mouseDown  (const MouseEvent&) override;
+    void mouseUp    (const MouseEvent&) override;
+    void mouseDrag  (const MouseEvent&) override;
+    void mouseMove  (const MouseEvent&) override;
     
     
 //    void mouseDoubleClick (const MouseEvent&);
     
     std::function<void(PNoteComponent*, const MouseEvent&)> onNoteSelect;
     std::function<void(PNoteComponent*)> onPositionMoved;
-//    std::function<void(NoteComponent*, int, int)> onDragging;
     std::function<void(PNoteComponent*, const MouseEvent&)> onDragging; //send the drag event to other components..
     std::function<void(PNoteComponent*, int)> onLegnthChange; //sends the difference as this is relative for all components.
     

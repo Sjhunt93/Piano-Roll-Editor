@@ -32,8 +32,8 @@ public:
     NoteGridComponent (NoteGridStyleSheet & styleSheet);
     ~NoteGridComponent ();
     
-    void paint (Graphics & g);
-    void resized ();
+    void paint (Graphics & g) override;
+    void resized () override;
     
     void noteCompSelected (PNoteComponent *, const MouseEvent&);
     void noteCompPositionMoved (PNoteComponent *, bool callResize = true);
@@ -41,21 +41,21 @@ public:
     void noteCompDragging (PNoteComponent*, const MouseEvent&);
     void setPositions ();
     
-    /*
+    /* optional
     void mouseEnter (const MouseEvent&);
     void mouseExit  (const MouseEvent&);
     void mouseMove  (const MouseEvent&);
     */
-    void mouseDown  (const MouseEvent&);
-    void mouseDrag  (const MouseEvent&);
-    void mouseUp    (const MouseEvent&);
-    void mouseDoubleClick (const MouseEvent&);
+    void mouseDown  (const MouseEvent&) override;
+    void mouseDrag  (const MouseEvent&) override;
+    void mouseUp    (const MouseEvent&) override;
+    void mouseDoubleClick (const MouseEvent&) override;
     
     void setupGrid (float pixelsPerBar, float compHeight, const int bars);
     void setQuantisation (const int val);
     
     
-    bool keyPressed (const KeyPress& key, Component* originatingComponent);
+    bool keyPressed (const KeyPress& key, Component* originatingComponent) override;
     void deleteAllSelected ();
     
     // From here you could convert this into MIDI or any other custom musical encoding.
@@ -74,18 +74,19 @@ private:
     void sendEdit ();
     
     NoteGridStyleSheet & styleSheet;
+    SelectionBox selectorBox;
     std::vector<PNoteComponent *> noteComps;
-    float noteCompHeight;
-    float pixelsPerBar;
-    st_int ticksPerTimeSignature = PRE::defaultResolution * 4; //4/4 assume
     
     Array<int> blackPitches;
+
     
-    SelectionBox selectorBox;
+    float noteCompHeight;
+    float pixelsPerBar;
+    st_int ticksPerTimeSignature;
     st_int currentQValue;
     st_int lastNoteLength;
-    bool    firstDrag;
-    bool firstCall = false;
-    int lastTrigger = -1;
+    bool firstDrag;
+    bool firstCall;
+    int lastTrigger;
 };
 #endif /* NoteGridComponent_hpp */

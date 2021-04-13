@@ -8,12 +8,18 @@
 #ifndef TimelineComponent_hpp
 #define TimelineComponent_hpp
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "PConstants.h"
 
+/*
+ Timelime component assumes 4/4
+ todo: add support for other time signatures
+ */
 class TimelineComponent : public Component {
 public:
     
     TimelineComponent ();
+    //todo
+    //TimelineComponent (const timeSig);
     
     void setup (const int barsToDraw, const int pixelsPerBar);
     void paint (Graphics & g);

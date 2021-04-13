@@ -13,11 +13,13 @@ NoteGridControlPanel::NoteGridControlPanel (NoteGridComponent & component, NoteG
     addAndMakeVisible(noteCompHeight);
     addAndMakeVisible(pixelsPerBar);
     
+    // These are all arbitary values
     noteCompHeight.setRange(10, 30, 1);
     pixelsPerBar.setRange(400, 2000, 1);
     
     pixelsPerBar.setTextValueSuffix(" Pixels per bar");
     noteCompHeight.setTextValueSuffix(" Pixels per row");
+    
     
     pixelsPerBar.setValue(900, dontSendNotification);
     noteCompHeight.setValue(20, dontSendNotification);
@@ -82,8 +84,12 @@ void NoteGridControlPanel::setQuantisation (PRE::eQuantisationValue value)
 
 void NoteGridControlPanel::resized ()
 {
-    pixelsPerBar.setBounds(5, 5, 300, (getHeight() / 2) - 10);
-    noteCompHeight.setBounds(5, pixelsPerBar.getBottom() + 5, 300, (getHeight() / 2) - 10);
+    pixelsPerBar.setBounds(5, 5, 300, (getHeight() / 2) - 20);
+    noteCompHeight.setBounds(5, pixelsPerBar.getBottom() + 5, 300, (getHeight() / 2) - 20);
+    
+    pixelsPerBar.setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxLeft, false, 150, pixelsPerBar.getHeight() - 5);
+    noteCompHeight.setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxLeft, false, 150, noteCompHeight.getHeight() - 5);
+    
     
     drawMIDINotes.setBounds(pixelsPerBar.getRight() + 5, 5, 150, (getHeight() / 3) - 10);
     drawMIDIText.setBounds(pixelsPerBar.getRight() + 5, drawMIDINotes.getBottom() + 5, 200, drawMIDINotes.getHeight());
@@ -100,5 +106,5 @@ void NoteGridControlPanel::paint (Graphics & g)
 
 void NoteGridControlPanel::renderSequence ()
 {
-    
+    //warning this needs to be moved..
 }

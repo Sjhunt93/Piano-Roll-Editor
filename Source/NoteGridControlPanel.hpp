@@ -9,7 +9,7 @@
 #define NoteGridControlPanel_hpp
 
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "PConstants.h"
 #include "NoteGridComponent.hpp"
 #include "NoteGridStyleSheet.hpp"
 
@@ -22,7 +22,7 @@ public:
     void paint (Graphics & g);
     
     void renderSequence ();
-    std::function<void(int pixelsPerBar, int noteHeight)> configureGrid; //p
+    std::function<void(int pixelsPerBar, int noteHeight)> configureGrid;
     
     void setQuantisation (PRE::eQuantisationValue value);
 private:
@@ -30,10 +30,11 @@ private:
     NoteGridComponent & noteGrid;
     NoteGridStyleSheet & styleSheet;
     
-    Slider noteCompHeight;
-    Slider pixelsPerBar;
+    Slider noteCompHeight, pixelsPerBar;
+    
     TextButton render;
     ToggleButton drawMIDINotes, drawMIDIText, drawVelocity;
+    
     ComboBox quantisationVlaue;
 };
 

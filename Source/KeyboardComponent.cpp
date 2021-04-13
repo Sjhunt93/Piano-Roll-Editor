@@ -24,22 +24,18 @@ void KeyboardComponent::paint (Graphics & g)
         
         for (int i = 127; i >= 0; i--) {
             
-            if (blackPitches.contains(i%12)) {
-                g.setColour(Colours::darkgrey);
-            }
-            else {
-                g.setColour(Colours::lightgrey.darker());
-            }
-            g.fillRect(0, (int)line, getWidth(), (int)noteCompHeight);
+            const int pitch = i % 12;
+            g.setColour ( blackPitches.contains(pitch) ? (Colours::darkgrey) : Colours::lightgrey.darker() );
+        
+            g.fillRect(0, (int)line, getWidth(), (int)noteCompHeight); //explicit cast to int otherwise matching function error
+            
             g.setColour(Colours::white);
             g.drawText(String(i), 5, line, 40, noteCompHeight, Justification::left);
+            
             line += noteCompHeight;
+            
             g.setColour(Colours::black);
             g.drawLine(0, line, getWidth(), line);
         }
     }
-}
-void KeyboardComponent::resized ()
-{
-    
 }

@@ -13,7 +13,7 @@ MainComponent::MainComponent()
 {
     setSize (800, 600);
     addAndMakeVisible(editor);
-    editor.setup(10, 900, 20); //default 10 bars..
+    editor.setup(10, 900, 20); //default 10 bars, with 900 pixels per bar (width) and 20 pixels per step (each note height)
 }
 
 MainComponent::~MainComponent()
@@ -24,8 +24,7 @@ MainComponent::~MainComponent()
 //==============================================================================
 void MainComponent::paint (Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
-    
+    //unused
 }
 
 void MainComponent::resized()

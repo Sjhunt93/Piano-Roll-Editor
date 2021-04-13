@@ -8,11 +8,17 @@
 #ifndef NoteGridStyleSheet_hpp
 #define NoteGridStyleSheet_hpp
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "PConstants.h"
 
+/*
+ TODO extend this class so that it controls other elements of style, i.e. colours..
+ */
 class NoteGridStyleSheet {
 public:
-    friend class NoteGridControlPanel; //we use to ensure a one way only relationship. The control pannel can set member varialbes but nothing else can...
+    /*
+     We use a friend class to ensure a one-way only relationship. The control pannel can set member varialbes easily. Saves adding loads of getters/setters
+     */
+    friend class NoteGridControlPanel;
     
     NoteGridStyleSheet ();
     

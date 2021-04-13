@@ -35,7 +35,8 @@ public:
     
     bool compare (const NoteModel & other, bool compareUIDs = true);
     
-    
+    // getters and setters
+    // setters also trigger notes and register with the interaction logger (IGME only)
     void setNote (u8 _note);
     void setVelocity (u8 _velocity);
     void setStartTime (st_int _time);
@@ -52,9 +53,11 @@ public:
     std::function<void(int note,int velocity)> sendChange;
     void trigger();
     void trigger(const u8 note, const u8 vel);
+    
 #ifndef LIB_VERSION
     int64_t        uniqueId;
 #endif
+    
 private:
     u8 note;
     u8 velocity;
@@ -71,6 +74,9 @@ public:
     int lowNote;
     int highNote;
     
+    /*
+     used to debug
+     */
     void print ();
 };
 

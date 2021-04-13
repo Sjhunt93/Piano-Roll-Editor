@@ -8,17 +8,14 @@
 #ifndef PianoRollEditorComponent_hpp
 #define PianoRollEditorComponent_hpp
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "PConstants.h"
 #include "NoteGridControlPanel.hpp"
 #include "TimelineComponent.hpp"
 #include "KeyboardComponent.hpp"
 
-//==============================================================================
 /*
- This component lives inside our window, and this is where you should put all
- your controls and content.
+ This custom viewport is used so that when the main piano roll is moved the others can be moved also, see diagram below
  */
-
 class CustomViewport : public Viewport
 {
 public:
@@ -54,7 +51,7 @@ public:
  
  */
 
-class PianoRollEditorComponent   : public Component
+class PianoRollEditorComponent : public Component
 {
 public:
     
@@ -66,39 +63,85 @@ public:
     //==============================================================================
     PianoRollEditorComponent();
     ~PianoRollEditorComponent();
-    
     //==============================================================================
+    
+    /*
+     This needs to be called after the constructor and determines the size of the grid.
+     
+     Once setup the number of bars can be dynamically altered through @updateBars(..
+     
+     Todo: automatically resize the number of bars
+     */
+    void setup (const int bars, const int pixelsPerBar, const int noteHeight);
+    void updateBars (const int newNumberOfBars);
+    
+    
     void paint (Graphics&) override;
     void resized() override;
     
     void showControlPannel (bool state);
-    void setStyleSheet (NoteGridStyleSheet style);
-    void setup (const int bars, const int pixelsPerBar, const int noteHeight);
-    void updateBars (const int newNumberOfBars);
+//    void setStyleSheet (NoteGridStyleSheet style);
     
+    
+    /*
+     PRE Sequence is essentially the input and output to the grid, i.e. the data model abstracted away from the GUI
+     The GUI creates a PRESequence
+     The GUI understands how to render a PRESequence
+     
+     Although this approach is probably inefficent, its unlikely to cause realtime performance issues...
+     */
     void loadSequence (PRESequence sequence);
     PRESequence getSequence ();
     
+    
     void setScroll (double x, double y);
     
+    /*
+     If you just want to view the editor then disable the grid.
+     */
     void disableEditing (bool value);
     NoteGridControlPanel & getControlPannel ();
     
+    /*
+     Returns any notes that are selected used in IGME
+     */
     ExternalModelEditor getSelectedNoteModels ();
     
+    /*
+     This is called when the grid is edited.
+     */
     std::function<void()> onEdit;
+    /*
+     You can use this to implement simple MIDI synthesis when notes are being edited,
+     when notes are edited this function will be called
+     */
     std::function<void(int note,int velocity)> sendChange;
 
 private:
     //==============================================================================
-    // Your private member variables go here...
+    
     NoteGridStyleSheet      styleSheet;
-    NoteGridComponent       noteGrid;
+    
+    /*
+     These 3 essential components make up the piano roll editor.
+     Each is stored in a customViewport instance, that are coupled to move in unison
+     */
+    NoteGridComponent       noteGrid; //the actual piano roll
+    TimelineComponent       timelineComp; // the timeline marker at the top
+    KeyboardComponent       keyboardComp; // the keyboard visualiser to the left
+    
     CustomViewport          viewportGrid, viewportPiano, viewportTimeline;
-    NoteGridControlPanel    noteGridPanel;
-    TimelineComponent       timelineComp;
-    KeyboardComponent       keyboardComp;
+    
+    /*
+     Optional control pannel
+     */
+    NoteGridControlPanel    controlPannel;
+    
+    
+    JUCE_DECLARE_NON_COPYABLE(PianoRollEditorComponent)
 //    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
+    
+    
 };
 
 

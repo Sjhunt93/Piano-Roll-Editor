@@ -65,7 +65,7 @@ void PNoteComponent::paint (Graphics & g)
     }
     String toDraw;
     if (styleSheet.getDrawMIDINoteStr()) {
-        toDraw += String(PRE::pitches_names[model.getNote()%12]) + String(model.getNote()/12) + String(" ");
+        toDraw += String(PRE::pitches_names[model.getNote() % 12]) + String(model.getNote() / 12) + String(" ");
     }
     if (styleSheet.getDrawMIDINum()) {
         toDraw += String(model.getNote());
@@ -91,7 +91,9 @@ void PNoteComponent::setValues (NoteModel m)
     if (m.getNote() == 255) { m.setNote(0); } //unsigned overflow
     if (m.getNote() > 127) { m.setNote(127); }
     
-    if (((int)m.getStartTime()) < 0) { m.setStartTime(0); } //cast to int as noteLen is unsigned. allows us to check for 0
+    //cast to int as noteLen is unsigned. allows us to check for 0
+    if (((int)m.getStartTime()) < 0) { m.setStartTime(0); }
+    
     model = m;
     repaint();
 
@@ -129,11 +131,10 @@ void PNoteComponent::mouseExit  (const MouseEvent&)
     repaint();
     
 }
-void PNoteComponent::mouseDown  (const MouseEvent& e)
+void PNoteComponent::mouseDown (const MouseEvent& e)
 {
     CHECK_EDIT
-//    startX = getX();
-//    startY = getY();
+
     if (e.mods.isShiftDown()) {
         velocityEnabled = true;
         startVelocity = model.getVelocity();
@@ -141,7 +142,6 @@ void PNoteComponent::mouseDown  (const MouseEvent& e)
     else if (getWidth() - e.getMouseDownX() < 10) {
         resizeEnabled = true;
         startWidth = getWidth();
-        
     }
     else {
         startDraggingComponent(this, e);
@@ -150,10 +150,8 @@ void PNoteComponent::mouseDown  (const MouseEvent& e)
     if (!resizeEnabled) {
         
     }
-    
-    
 }
-void PNoteComponent::mouseUp    (const MouseEvent& e)
+void PNoteComponent::mouseUp (const MouseEvent& e)
 {
     CHECK_EDIT
     if (onPositionMoved != nullptr) {
@@ -215,11 +213,3 @@ void PNoteComponent::mouseMove  (const MouseEvent& e)
     }
 }
 
-//MultiEditState NoteComponent::getMultiEditState ()
-//{
-//    
-//}
-//void NoteComponent::setMultiEditState (MultiEditState state)
-//{
-//    
-//}

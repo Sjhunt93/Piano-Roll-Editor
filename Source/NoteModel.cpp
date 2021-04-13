@@ -31,7 +31,6 @@ NoteModel::NoteModel (u8 n, u8 v, st_int st, st_int nl, Flags f)
 #ifndef LIB_VERSION
     uniqueId = StaticCounter::count();
 #endif
-//    LOG_NOTE_ADDED(<#A#>, <#B#>, <#C#>)
 }
 NoteModel::NoteModel (const NoteModel & other)
 {
@@ -55,13 +54,13 @@ void NoteModel::quantiseModel (int qValue, bool qStartTime, bool qNoteLegnth)
 {
     auto quantiseValue = [&](int qDiv, int valueToQuantise) -> int
     {
-        //            const int lessThen = valueToQuantise % qDiv;
-        const int simpleQ = (valueToQuantise / qDiv) * qDiv; //use lossey int division
-        const int simpleQ1 = ((valueToQuantise / qDiv)+1) * qDiv; //use lossey int division
-        if (valueToQuantise-simpleQ < simpleQ1-valueToQuantise) { //lower boundry
-            return simpleQ;
+        const int simpleQLow = (valueToQuantise / qDiv) * qDiv; //use lossey int division
+        const int simpleQHigh = ((valueToQuantise / qDiv)+1) * qDiv;
+        
+        if (valueToQuantise-simpleQLow < simpleQHigh-valueToQuantise) { //lower boundry
+            return simpleQLow;
         }
-        return simpleQ1;
+        return simpleQHigh;
     };
     
     if (qStartTime) {
@@ -80,12 +79,12 @@ bool NoteModel::compare (const NoteModel & other, bool compareUIDs)
 {
 #define RETURN_IF(A) if(A){return false;}
     
-    RETURN_IF(note != other.note)
-    RETURN_IF(velocity != other.velocity)
-    RETURN_IF(startTime != other.startTime)
-    RETURN_IF(noteLegnth != other.noteLegnth)
-    RETURN_IF(flags.state != other.flags.state)
-    RETURN_IF(flags.isGenerative != other.flags.isGenerative)
+    RETURN_IF(note                  != other.note)
+    RETURN_IF(velocity              != other.velocity)
+    RETURN_IF(startTime             != other.startTime)
+    RETURN_IF(noteLegnth            != other.noteLegnth)
+    RETURN_IF(flags.state           != other.flags.state)
+    RETURN_IF(flags.isGenerative    != other.flags.isGenerative)
     
 #ifndef LIB_VERSION
     if (compareUIDs) {
