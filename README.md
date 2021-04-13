@@ -1,6 +1,9 @@
 # Piano-Roll-Editor
 A simple piano roll editor written in c++ using the JUCE framework for graphics
 
+![alt text](img.png "prreview")
+
+
 # Usage
 
 Simple add the relevant files from the **source** folder to your JUCE project. The main.cpp, mainComponent.h and mainComponent.cpp are shown as examples of how to setup and use the various piano roll editor components. 
