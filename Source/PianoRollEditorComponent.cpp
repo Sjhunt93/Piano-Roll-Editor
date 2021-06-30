@@ -55,6 +55,8 @@ PianoRollEditorComponent::PianoRollEditorComponent() : noteGrid(styleSheet), con
             this->sendChange(note, vel);
         }
     };
+    showPlaybackMarker = false;
+    playbackTicks = 0;
 }
 
 PianoRollEditorComponent::~PianoRollEditorComponent()
@@ -66,8 +68,16 @@ PianoRollEditorComponent::~PianoRollEditorComponent()
 void PianoRollEditorComponent::paint (Graphics& g)
 {
     g.fillAll(Colours::darkgrey.darker());
-}
 
+}
+void PianoRollEditorComponent::paintOverChildren (Graphics& g)
+{
+    const int x = noteGrid.getPixelsPerBar() * (playbackTicks / (4.0 * PRE::defaultResolution));
+    const int xAbsolute = viewportGrid.getViewPosition().getX();
+    
+    g.setColour(Colours::greenyellow);
+    g.drawLine(x - xAbsolute, 0, x - xAbsolute, getHeight(), 5.0);
+}
 void PianoRollEditorComponent::resized()
 {
     viewportGrid.setBounds(80, 50, getWidth()-90, controlPannel.isVisible() ? getHeight()-180 : getHeight() - 55);
@@ -141,6 +151,13 @@ PRESequence PianoRollEditorComponent::getSequence ()
 void PianoRollEditorComponent::setScroll (double x, double y)
 {
     viewportGrid.setViewPositionProportionately(x, y);
+}
+void PianoRollEditorComponent::setPlaybackMarkerPosition (const st_int ticks, bool isVisable)
+{
+    showPlaybackMarker = isVisable;
+    playbackTicks = ticks;
+    repaint();
+    
 }
 void PianoRollEditorComponent::disableEditing (bool value)
 {

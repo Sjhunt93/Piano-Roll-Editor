@@ -77,6 +77,8 @@ public:
     
     
     void paint (Graphics&) override;
+    void paintOverChildren (Graphics&) override;
+
     void resized() override;
     
     void showControlPannel (bool state);
@@ -95,6 +97,7 @@ public:
     
     
     void setScroll (double x, double y);
+    void setPlaybackMarkerPosition (const st_int ticks, bool isVisable = true); 
     
     /*
      If you just want to view the editor then disable the grid.
@@ -137,6 +140,8 @@ private:
      */
     NoteGridControlPanel    controlPannel;
     
+    st_int  playbackTicks;
+    bool    showPlaybackMarker;
     
     JUCE_DECLARE_NON_COPYABLE(PianoRollEditorComponent)
 //    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
