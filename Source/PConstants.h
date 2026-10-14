@@ -17,7 +17,9 @@
 
 #include <JuceHeader.h>
 using namespace juce;
+#ifndef IGME_BUILD
 #define LIB_VERSION
+#endif
 
 #ifndef u8
 typedef unsigned char u8;
